@@ -8,7 +8,6 @@ import app from '../app';
 import Validator, { validatePasswordPolicy } from '../lib/vvalidator';
 
 const $config = computed(() => app.$.config)
-const $locale = computed(() => ({...app.$.locale }))
 const $settings = app.$.settings
 const $t = app.translate
 
@@ -39,16 +38,16 @@ async function validateAndContinue() {
   <div singlebase-auth-ui-otp-view>
     <form @submit.prevent="validateAndContinue">
       <div>
-        <VFormField label="New Password" :error="$validator?.get('password')">
+        <VFormField :label="$t('newPassword')" :error="$validator?.get('password')">
           <input class="v-form-input" type="password" v-model="app.$.form.password">
         </VFormField>
-        <VFormField label="Re-enter Password">
+        <VFormField :label="$t('reEnterPassword')">
           <input class="v-form-input" type="password" v-model="app.$.form.password2">
         </VFormField>
       </div>
 
       <div>
-        <button type="button" :class="[$config.styleRoundButton ? 'v-btn-pill' : '']" class="v-btn-primary w-full my-4 uppercase" @click="validateAndContinue">Continue</button>
+        <button type="button" :class="[$config.styleRoundButton ? 'v-btn-pill' : '']" class="v-btn-primary w-full my-4 uppercase" @click="validateAndContinue">{{ $t('continue') }}</button>
       </div>
     </form>
   </div>

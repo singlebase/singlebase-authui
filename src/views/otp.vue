@@ -5,7 +5,6 @@ import Validator from '../lib/vvalidator'
 import app from '../app';
 
 const $config = computed(() => app.$.config)
-const $locale = computed(() => ({...app.$.locale }))
 const $t = app.translate
 
 const validations = {
@@ -32,14 +31,14 @@ function validateAndContinue() {
   <div singlebase-auth-ui-otp-view>
     <form @submit.prevent="validateAndContinue">
       <div>
-        <VFormField label="OTP" :error="$validator?.get('otp')">
+        <VFormField :label="$t('otp')" :error="$validator?.get('otp')">
           <input class="v-form-input" type="text" v-model="app.$.form.otp">
         </VFormField>
       </div>
 
       <div>
-        <button type="button" :class="[$config.styleRoundButton ? 'v-btn-pill' : '']" class="v-btn-primary w-full my-4 uppercase" @click="validateAndContinue">Continue</button>
+        <button type="button" :class="[$config.styleRoundButton ? 'v-btn-pill' : '']" class="v-btn-primary w-full my-4 uppercase" @click="validateAndContinue">{{ $t('continue') }}</button>
       </div>
     </form>
   </div>
-</template>../model
+</template>

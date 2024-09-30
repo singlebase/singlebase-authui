@@ -47,8 +47,16 @@ const props = defineProps({
 
 const $view = computed(() => app.$.view) 
 const $config = computed(() => app.$.config)
-const $locale = computed(() => ({...app.$.locale, view: app.$.locale?.views[app.$.view]}))
 const $t = app.translate
+
+/**
+ * Translate the current view component
+ * @param word 
+ */
+function $t_viewComponent(word) {
+  const view = $view.value
+  return $t(`__components__.${view}.${word}`)
+}
 
 // mounting
 onMounted(async () => {
@@ -97,11 +105,11 @@ onMounted(async () => {
 
 
     <div v-if="app.$.initialized === 0" class="my-4">
-        <VSpinner text="loading..."/>
+        <VSpinner :text="$t('loading')"/>
     </div>
 
     <div v-if="app.$.initialized === -1" class="my-4">
-        <VError>Error Loading AuthUI</VError>
+        <VError>{{ $t('errorInitializationFailed') }}</VError>
     </div>
 
     <div v-if="app.$.initialized === 1"  class="bg-s---late-50 p-8 mx-auto rounded-xl ">
@@ -115,15 +123,15 @@ onMounted(async () => {
         <!-- headnav -->
         <fieldset class="v-form-fieldset" :disabled="app.$.loading">
           <div singlebase-authui-header-nav v-if="$view !== 'login-success'" class="flex justify-between ">
-            <div><button v-if="$config.showBackButton && $view !== 'login'"  :class="[$config.styleRoundButton ? '' : '']" class="v-btn-ghost v-btn-sm mb-4" @click="app.setView('login')">&larr; {{ $locale?.globals?.back }}</button></div>
-            <div><button v-if="$config.showSignupButton && $view === 'login'"  :class="[$config.styleRoundButton ? '' : '']" class="v-btn-ghost v-btn-sm mb-4" @click="app.setView('signup')">{{ $locale?.globals?.signup }} &rarr; </button></div>
+            <div><button v-if="$config.showBackButton && $view !== 'login'"  :class="[$config.styleRoundButton ? '' : '']" class="v-btn-ghost v-btn-sm mb-4" @click="app.setView('login')">&larr; {{ $t('back') }}</button></div>
+            <div><button v-if="$config.showSignupButton && $view === 'login'"  :class="[$config.styleRoundButton ? '' : '']" class="v-btn-ghost v-btn-sm mb-4" @click="app.setView('signup')">{{ $t('signup')}} &rarr; </button></div>
           </div>
         </fieldset>
 
         <!-- heading -->
         <div singlebase-authui-heading>
-          <h2 v-if="$locale?.view?.title" class="v-heading mb-4">{{ $locale?.view?.title }}</h2>
-          <h3 v-if="$locale?.view?.description" class="v-heading-description mb-4">{{ $locale?.view?.description }}</h3>
+          <h2 v-if="$t_viewComponent('title')" class="v-heading mb-4">{{ $t_viewComponent('title') }}</h2>
+          <h3 v-if="$t_viewComponent('description')" class="v-heading-description mb-4">{{ $t_viewComponent('description') }}</h3>
         </div>
 
         <!-- show spinner -->
@@ -144,7 +152,7 @@ onMounted(async () => {
               <OtpView v-else-if="$view == 'otp'" />
               <LoginSuccessView v-else-if="$view == 'login-success'" />
               <ResetPasswordView v-else-if="$view == 'reset-password'" />
-              <div v-else><VError>Invalid entry point</VError></div>              
+              <div v-else><VError>{{ $t('invalidEntryPoint') }}</VError></div>              
         </fieldset>
 
       </div>
@@ -157,10 +165,3 @@ onMounted(async () => {
   </div>
 
 </template>
-
-<style>
-[singlebase-authui] {
-  background-color: gray !important;
-  color: red !important;
-}
-</style>

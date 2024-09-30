@@ -5,7 +5,6 @@ import Validator from '../lib/vvalidator'
 import app from '../app';
 
 const $config = computed(() => app.$.config)
-const $locale = computed(() => ({...app.$.locale }))
 const $t = app.translate
 
 const validations = {
@@ -31,14 +30,14 @@ function validateAndContinue() {
 <template>
     <div singlebaseauthui-lostpassword-view>
       <form @submit.prevent="validateAndContinue">
-        <VFormField label="Email"  :error="$validator?.get('email')">
+        <VFormField :label="$t('email')"  :error="$validator?.get('email')">
           <input class="v-form-input" type="text" v-model="app.$.form.email">
         </VFormField>
 
         <div>
-          <button type="button" :class="[$config.styleRoundButton ? 'v-btn-pill' : '']" class="v-btn-primary w-full my-4 uppercase" @click="validateAndContinue">Continue</button>
+          <button type="button" :class="[$config.styleRoundButton ? 'v-btn-pill' : '']" class="v-btn-primary w-full my-4 uppercase" @click="validateAndContinue">{{ $t('continue') }}</button>
         </div>
     </form>
 
   </div>
-</template>../model
+</template>

@@ -4,8 +4,9 @@
  * Application logic 
  */
 import { reactive } from 'vue'
-import { waitUntil, merge, isPlainObject, getNestedProperty } from './lib'
+import { waitUntil, merge, isPlainObject, getNestedProperty, isEmpty } from './lib'
 import { generatePasswordPolicyHint } from './lib/vvalidator'
+import LOCALES from './lib/locales.json'
 
 const ERRORS = {
   GENERIC: 'Unable to continue. Please try again later.',
@@ -103,48 +104,8 @@ function defaultConfigData() {
   }
 }
 
-function defaultLocaleData() {
-  return {
-    globals: {
-      __name__: "Singlebase-AuthUI",
-      __version__: "__VERSION__",
-      email: "Email",
-      password: "Password",
-      firstName: "First Name",
-      lastName: "Last Name",
-      displayName: "Display Name",
-      continue: "Continue",
-      back: "Back",
-      signup: "Signup",
-      login: "Login",
-      logout: 'Logout',
-      forgotPassword: "Forgot Password",
-      youArereLoggedIn: "You're logged in."
-    },
-    views: {
-      login: {
-        title: "Login to account",
-        description: ""
-      },
-      signup: {
-        title: "Signup"
-      },
-      otp: {
-        title: "OTP",
-        description: "*A One Time Password (OTP) code was sent to your email address, please enter it below to continue."
-      },
-      "lost-password": {
-        title: "Lost Password",
-        description: null
-      },
-      "reset-password": {
-        title: "Reset Password",
-        description: "Enter your new password."
-      },
-      "invite-email": {},
-    }
-  
-  }
+function defaultLocaleData(lang="en") {
+  return { ...LOCALES["en"] }
 }
 
 /**
@@ -303,15 +264,21 @@ function resetConfig() {
 }
 
 function updateConfig(config) {
-  state.config = merge(state.config, config)
 
-  // setup locale 
-  if (isPlainObject(state?.config?.locales) && config?.locale && getNestedProperty(state?.config?.locales, config?.locale)) {
-    state.locale = merge(defaultConfigData(), getNestedProperty(_lkls, config?.locale))
+  const data = merge(state.config, config)
+  // setup state.locale 
+  if (isPlainObject(data?.locales) && data?.locale && getNestedProperty(data?.locales, data?.locale)) {
+    const nlocale = getNestedProperty(data?.locales, data?.locale)    
+    if (isEmpty(state.locale)) {
+      state.locale = nlocale
+    } else {
+      state.locale = merge(defaultConfigData(), getNestedProperty(data?.locales, config?.locale))
+    }
   }
+  state.config = data
+
   return state.config
 }
-
 
 function setLoading(loading=true) {
   state.loading = loading

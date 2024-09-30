@@ -1,0 +1,53 @@
+{
+  "en": {
+    "__name__": "en",
+    "__title__": "English",
+    "email": "Email",
+    "password": "Password",
+    "firstName": "First Name",
+    "lastName": "Last Name",
+    "displayName": "Display Name",
+    "continue": "Continue",
+    "back": "Back",
+    "signup": "Signup",
+    "login": "Login",
+    "logout": "Logout",
+    "otp": "OTP",
+    "forgotPassword": "Forgot Password",
+    "youAreLoggedIn": "You're logged in.",
+    "continueWithLogin": "Continue with login",
+    "or": "or",
+    "and": "and",
+    "otpCodeWillBeSentToEmail": "*A one time passcode (OTP) will be sent to your email for verification.",
+    "newPassword": "New Password",
+    "reEnterPassword": "Re-enter Password",
+    "invalidEntryPoint": "Invalid entry point",
+    "errorInitializationFailed": "Error Loading AuthUI",
+    "loading": "loading",
+    "signupWith": "Signup With",
+    "loginWith": "Login with",
+
+    "__components__": {
+      "login": {
+        "title": "Login to account",
+        "description": ""
+      },
+      "signup": {
+        "title": "Signup"
+      },
+      "otp": {
+        "title": "OTP",
+        "description": "*A one time passcode (OTP) was sent to your email address, please enter it below to continue."
+      },
+      "lost-password": {
+        "title": "Lost Password",
+        "description": null
+      },
+      "reset-password": {
+        "title": "Reset Password",
+        "description": "Enter your new password."
+      },
+      "invite-email": {}
+    }
+  }
+}

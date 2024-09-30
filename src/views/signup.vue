@@ -6,7 +6,6 @@ import Validator, { validatePasswordPolicy } from '../lib/vvalidator'
 import app from '../app';
 
 const $config = computed(() => app.$.config)
-const $locale = computed(() => ({...app.$.locale }))
 const $settings = app.$.settings 
 const $t = app.translate
 
@@ -17,10 +16,10 @@ const validations = {
   "surname": ["required", "name"]
 }
 const fieldNames = {
-  "email": "Email",
-  "password": "Password",
-  "display_name": "First Name",
-  "surname": "Last Name"
+  "email": $t('email'),
+  "password": $t('password'),
+  "display_name": $t('firstName'),
+  "surname": $t('lastName')
 }
 
 const $validator = new Validator({validations, fieldNames}, app.$.form)
@@ -41,31 +40,31 @@ async function validateAndContinue() {
   <div singlebase-auth-ui-signup-view>
     <form @submit.prevent="validateAndContinue">
       <div>
-          <VFormField label="Email" :error="$validator?.get('email')">
+          <VFormField :label="$t('email')" :error="$validator?.get('email')">
             <input class="v-form-input" type="text" v-model="app.$.form.email">
           </VFormField>
 
-          <VFormField label="Password" :hint="$config.showPasswordHint ? $settings?.passwordHint : null" :error="$validator?.get('password')">
+          <VFormField :label="$t('password')" :hint="$config.showPasswordHint ? $settings?.passwordHint : null" :error="$validator?.get('password')">
             <input class="v-form-input" type="password" v-model="app.$.form.password">
           </VFormField>
 
-          <VFormField label="First Name" :error="$validator?.get('display_name')">
+          <VFormField :label="$t('firstName')" :error="$validator?.get('display_name')">
             <input class="v-form-input" type="text" v-model="app.$.form.display_name">
           </VFormField>
 
-          <VFormField label="Last Name" :error="$validator?.get('surname')">
+          <VFormField :label="$t('lastName')" :error="$validator?.get('surname')">
             <input class="v-form-input" type="text" v-model="app.$.form.surname">
           </VFormField>
 
-          <p v-if="$settings.mfa" class="text-xs text-gray-600 v-text my-4">*An OTP code will be sent to your email address to verify your account.</p>
+          <p v-if="$settings.mfa" class="text-xs text-gray-600 v-text my-4">{{ $t('otpCodeWillBeSentToEmail') }}</p>
 
           <div>
-            <button type="button" :class="[$config.styleRoundButton ? 'v-btn-pill' : '']" class="v-btn-primary w-full my-4 uppercase" @click="validateAndContinue">Continue</button>
+            <button type="button" :class="[$config.styleRoundButton ? 'v-btn-pill' : '']" class="v-btn-primary w-full my-4 uppercase" @click="validateAndContinue">{{ $t('continue') }}</button>
           </div>
       </div>
     </form>
 
-    <VSocialLogin  v-if="$config.showSocialLogin" prefix="Signup with "/>
+    <VSocialLogin  v-if="$config.showSocialLogin" :prefix="$t('signupWith')"/>
 
   </div>
-</template>../model
+</template>
