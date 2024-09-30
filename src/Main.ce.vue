@@ -5,7 +5,7 @@
  * props
  *  - lang:str=en
  *  - theme:str=default
- *  - entry-point:str
+ *  - view:str=login
  *  - style-round-button:bool
  *  - show-back-button:bool
  *  - show-signup-button:bool
@@ -13,7 +13,7 @@
  *  - show-social-login:bool
  * 
  * 
- * @entry-point:
+ * @view:
  *  - login
  *  - signup
  *  - lost-password
@@ -24,11 +24,11 @@ import { computed, onMounted } from 'vue';
 import app from './app';
 import { toBoolean } from './lib'
 
-//=== components
+//=== import components
 import VSpinner from './components/VSpinner.vue'
 import VError from './components/VError.vue';
 
-//=== views
+//=== import views
 import LoginView from './views/login.vue';
 import LostPasswordView from './views/lost-password.vue';
 import OtpView from './views/otp.vue';
@@ -36,8 +36,7 @@ import SignupView from './views/signup.vue';
 import LoginSuccessView from './views/login-success.vue';
 import ResetPasswordView from './views/reset-password.vue';
 
-
-//=== props
+//=== set up props
 const props = defineProps({
   view: {type: String, default: 'login'},
   lang: {type: String, default: 'en'},
@@ -54,7 +53,7 @@ const $config = computed(() => app.$.config)
 const $t = app.translate
 
 /**
- * Translate the current view component
+ * Translate the current view component under $Locales#__components__
  * @param word 
  * @returns string
  */
@@ -63,9 +62,10 @@ function $t_viewComponent(word) {
   return $t(`__components__.${view}.${word}`)
 }
 
-// mounting
-onMounted(async () => {
-
+/**
+ * Setup function
+ */
+async function setup() {
   // Setup config
   const config = {}
 
@@ -93,7 +93,14 @@ onMounted(async () => {
   if (props?.view && validEntryPoints.includes(props?.view)) {
     app.setView(props?.view)
   }
+}
 
+// mounting
+onMounted(async () => {
+
+  // setup 
+  await setup() 
+  
   //== initialize
   await app.initialize()
 

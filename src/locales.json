@@ -1,7 +1,7 @@
 {
   "en": {
-    "__name__": "en",
-    "__title__": "English",
+    "__locale__": "en",
+    "__name__": "English",
     "email": "Email",
     "password": "Password",
     "firstName": "First Name",
@@ -54,8 +54,8 @@
     }
   },
   "es": {
-    "__name__": "es",
-    "__title__": "Español",
+    "__locale__": "es",
+    "__name__": "Español",
     "email": "Correo Electrónico",
     "password": "Contraseña",
     "firstName": "Nombre",
@@ -108,8 +108,8 @@
     }
   },
   "fr": {
-    "__name__": "fr",
-    "__title__": "Français",
+    "__locale__": "fr",
+    "__name__": "Français",
     "email": "Email",
     "password": "Mot de Passe",
     "firstName": "Prénom",
@@ -162,8 +162,8 @@
     }
   },
   "de": {
-    "__name__": "de",
-    "__title__": "Deutsch",
+    "__locale__": "de",
+    "__name__": "Deutsch",
     "email": "E-Mail",
     "password": "Passwort",
     "firstName": "Vorname",
@@ -216,8 +216,8 @@
     }
   },
   "zh": {
-    "__name__": "zh",
-    "__title__": "中文",
+    "__locale__": "zh",
+    "__name__": "中文",
     "email": "电子邮件",
     "password": "密码",
     "firstName": "名字",
@@ -270,8 +270,8 @@
     }
   },
   "ru": {
-    "__name__": "ru",
-    "__title__": "Русский",
+    "__locale__": "ru",
+    "__name__": "Русский",
     "email": "Электронная почта",
     "password": "Пароль",
     "firstName": "Имя",
