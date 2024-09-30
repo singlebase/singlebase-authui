@@ -1,7 +1,7 @@
 {
   "name": "@singlebase/singlebase-authui",
   "pkgName": "singlebase-js",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "Singlebase AuthUI",
   "homepage": "https://singlebase.cloud",
   "documentationURL": "https://docs.singlebasecloud.com/sdk/authui",
