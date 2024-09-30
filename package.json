@@ -1,7 +1,10 @@
 {
   "name": "@singlebase/singlebase-authui",
   "pkgName": "singlebase-js",
-  "version": "0.0.1",
+  "version": "0.0.2",
+  "description": "Singlebase AuthUI",
+  "homepage": "https://singlebase.cloud",
+  "documentationURL": "https://docs.singlebasecloud.com/sdk/authui",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -10,6 +13,20 @@
     "build2": "vue-tsc --noEmit && vite build",
     "buildx": "vue-tsc && vite build",
     "preview": "vite preview"
+  },
+  "main": "dist/singlebase-authui.umd.cjs",
+  "module": "dist/singlebase-authui.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/singlebase/singlebase-authui.git"
+  },
+  "author": {
+    "name": "Mardix",
+    "email": "mcx2082@gmail.com"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/singlebase/singlebase-authui/issues"
   },
   "dependencies": {
   },
