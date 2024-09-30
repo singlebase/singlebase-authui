@@ -6,7 +6,7 @@
 import { reactive } from 'vue'
 import { waitUntil, merge, isPlainObject, getNestedProperty, isEmpty } from './lib'
 import { generatePasswordPolicyHint } from './lib/vvalidator'
-import LOCALES from './lib/locales.json'
+import LOCALES from './locales.json'
 
 const ERRORS = {
   GENERIC: 'Unable to continue. Please try again later.',
@@ -96,15 +96,17 @@ function defaultConfigData() {
     signoutRedirectUrl: null,
     // @signoutCallback:Function - a function that will be triggered after success signin
     signoutCallback: null, 
-    // @locale:str - locale to use when locales is provided
-    locale: "", 
+    // @lang:str - lang to use when locales is provided
+    lang: "en", 
     // obj locales to use
     // {[locale]: {k/v}} -> {en: {...}, es: {...}}
-    locales: {} 
+    locales: {},
+    // @theme:str - The theme
+    theme: "default",
   }
 }
 
-function defaultLocaleData(lang="en") {
+function defaultLangData(lang="en") {
   return { ...LOCALES["en"] }
 }
 
@@ -138,19 +140,23 @@ const state = reactive({
   form: defaultFormData(),
 
   // ----------------------------------------
-  // @config:object
+  // @config:object - configuration provided by users
   config: defaultConfigData(),
 
   // ----------------------------------------
-  // @settings:object
+  // @settings:object - settings from SBC Auth
   settings: {
     mfa: false,
     passwordHint: ""
   },
 
   // ----------------------------------------
-  // @locale
-  locale: defaultLocaleData()
+  // @lang:str - current lang
+  lang: "en",
+
+  // ----------------------------------------
+  // @locales: object of all locales {en:{...}, es:{...}, ...}
+  locales: LOCALES
 
 })
 
@@ -263,19 +269,19 @@ function resetConfig() {
   state.config = defaultConfigData()
 }
 
-function updateConfig(config) {
+function updateConfig(config:object) {
 
-  const data = merge(state.config, config)
-  // setup state.locale 
-  if (isPlainObject(data?.locales) && data?.locale && getNestedProperty(data?.locales, data?.locale)) {
-    const nlocale = getNestedProperty(data?.locales, data?.locale)    
-    if (isEmpty(state.locale)) {
-      state.locale = nlocale
-    } else {
-      state.locale = merge(defaultConfigData(), getNestedProperty(data?.locales, config?.locale))
-    }
+  // lang
+  if (config?.lang) {
+    state.lang = config.lang
   }
-  state.config = data
+
+  // locales
+  if (isPlainObject(config?.locales)) {
+    state.locales = merge(state.locales, config?.locales)
+  }
+
+  state.config = merge(state.config, config)
 
   return state.config
 }
@@ -313,7 +319,7 @@ function requiredFields(obj, fields) {
 
 
 function translate(path) {
-  return getNestedProperty(state?.locale||{}, path)
+  return getNestedProperty(state?.locales?.[state?.lang], path)
 }
 
 //-----------------------------------------------------------------------------

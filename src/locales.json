@@ -1,0 +1,326 @@
+{
+  "en": {
+    "__name__": "en",
+    "__title__": "English",
+    "email": "Email",
+    "password": "Password",
+    "firstName": "First Name",
+    "lastName": "Last Name",
+    "displayName": "Display Name",
+    "continue": "Continue",
+    "back": "Back",
+    "signup": "Signup",
+    "login": "Login",
+    "logout": "Logout",
+    "otp": "OTP",
+    "forgotPassword": "Forgot Password",
+    "youAreLoggedIn": "You're logged in.",
+    "continueWithLogin": "Continue with login",
+    "or": "or",
+    "and": "and",
+    "otpCodeWillBeSentToEmail": "*A one time passcode (OTP) will be sent to your email for verification.",
+    "newPassword": "New Password",
+    "reEnterPassword": "Re-enter Password",
+    "invalidEntryPoint": "Invalid entry point",
+    "errorInitializationFailed": "Error Loading AuthUI",
+    "loading": "loading",
+    "signupWith": "Signup With",
+    "loginWith": "Login with",
+    "__components__": {
+      "login": {
+        "heading": "Login to account",
+        "subheading": "Please enter your email and password to access your account."
+      },
+      "signup": {
+        "heading": "Signup",
+        "subheading": "Create a new account by filling in your details below."
+      },
+      "otp": {
+        "heading": "OTP",
+        "subheading": "*A one time passcode (OTP) was sent to your email address, please enter it below to continue."
+      },
+      "lost-password": {
+        "heading": "Lost Password",
+        "subheading": "Enter your email address to receive instructions on how to reset your password."
+      },
+      "reset-password": {
+        "heading": "Reset Password",
+        "subheading": "Enter your new password."
+      },
+      "invite-email": {
+        "heading": "Invite Email",
+        "subheading": "You've been invited to join. Please check your email for further instructions."
+      }
+    }
+  },
+  "es": {
+    "__name__": "es",
+    "__title__": "Español",
+    "email": "Correo Electrónico",
+    "password": "Contraseña",
+    "firstName": "Nombre",
+    "lastName": "Apellido",
+    "displayName": "Nombre para Mostrar",
+    "continue": "Continuar",
+    "back": "Atrás",
+    "signup": "Registrarse",
+    "login": "Iniciar Sesión",
+    "logout": "Cerrar Sesión",
+    "otp": "OTP",
+    "forgotPassword": "Olvidé la Contraseña",
+    "youAreLoggedIn": "Has iniciado sesión.",
+    "continueWithLogin": "Continuar con el inicio de sesión",
+    "or": "o",
+    "and": "y",
+    "otpCodeWillBeSentToEmail": "*Un código de acceso único (OTP) se enviará a tu correo electrónico para la verificación.",
+    "newPassword": "Nueva Contraseña",
+    "reEnterPassword": "Reingresa la Contraseña",
+    "invalidEntryPoint": "Punto de entrada inválido",
+    "errorInitializationFailed": "Error al cargar AuthUI",
+    "loading": "cargando",
+    "signupWith": "Registrarse Con",
+    "loginWith": "Iniciar Sesión con",
+    "__components__": {
+      "login": {
+        "heading": "Iniciar Sesión en la Cuenta",
+        "subheading": "Por favor, ingresa tu correo electrónico y contraseña para acceder a tu cuenta."
+      },
+      "signup": {
+        "heading": "Registrarse",
+        "subheading": "Crea una nueva cuenta completando tus datos a continuación."
+      },
+      "otp": {
+        "heading": "OTP",
+        "subheading": "*Un código de acceso único (OTP) fue enviado a tu dirección de correo electrónico, por favor ingrésalo a continuación para continuar."
+      },
+      "lost-password": {
+        "heading": "Contraseña Perdida",
+        "subheading": "Ingresa tu dirección de correo electrónico para recibir instrucciones sobre cómo restablecer tu contraseña."
+      },
+      "reset-password": {
+        "heading": "Restablecer Contraseña",
+        "subheading": "Ingresa tu nueva contraseña."
+      },
+      "invite-email": {
+        "heading": "Correo de Invitación",
+        "subheading": "Has sido invitado a unirte. Por favor, revisa tu correo electrónico para más instrucciones."
+      }
+    }
+  },
+  "fr": {
+    "__name__": "fr",
+    "__title__": "Français",
+    "email": "Email",
+    "password": "Mot de Passe",
+    "firstName": "Prénom",
+    "lastName": "Nom",
+    "displayName": "Nom d'Affichage",
+    "continue": "Continuer",
+    "back": "Retour",
+    "signup": "S'inscrire",
+    "login": "Se Connecter",
+    "logout": "Se Déconnecter",
+    "otp": "OTP",
+    "forgotPassword": "Mot de Passe Oublié",
+    "youAreLoggedIn": "Vous êtes connecté.",
+    "continueWithLogin": "Continuer avec la connexion",
+    "or": "ou",
+    "and": "et",
+    "otpCodeWillBeSentToEmail": "*Un code d'accès unique (OTP) sera envoyé à votre email pour vérification.",
+    "newPassword": "Nouveau Mot de Passe",
+    "reEnterPassword": "Ressaisir le Mot de Passe",
+    "invalidEntryPoint": "Point d'entrée invalide",
+    "errorInitializationFailed": "Erreur de chargement de AuthUI",
+    "loading": "chargement",
+    "signupWith": "S'inscrire Avec",
+    "loginWith": "Se Connecter avec",
+    "__components__": {
+      "login": {
+        "heading": "Connexion au Compte",
+        "subheading": "Veuillez entrer votre email et votre mot de passe pour accéder à votre compte."
+      },
+      "signup": {
+        "heading": "S'inscrire",
+        "subheading": "Créez un nouveau compte en remplissant vos détails ci-dessous."
+      },
+      "otp": {
+        "heading": "OTP",
+        "subheading": "*Un code d'accès unique (OTP) a été envoyé à votre adresse email, veuillez le saisir ci-dessous pour continuer."
+      },
+      "lost-password": {
+        "heading": "Mot de Passe Oublié",
+        "subheading": "Entrez votre adresse email pour recevoir des instructions sur la façon de réinitialiser votre mot de passe."
+      },
+      "reset-password": {
+        "heading": "Réinitialiser le Mot de Passe",
+        "subheading": "Entrez votre nouveau mot de passe."
+      },
+      "invite-email": {
+        "heading": "Email d'Invitation",
+        "subheading": "Vous avez été invité à rejoindre. Veuillez vérifier votre email pour plus d'instructions."
+      }
+    }
+  },
+  "de": {
+    "__name__": "de",
+    "__title__": "Deutsch",
+    "email": "E-Mail",
+    "password": "Passwort",
+    "firstName": "Vorname",
+    "lastName": "Nachname",
+    "displayName": "Anzeigename",
+    "continue": "Fortfahren",
+    "back": "Zurück",
+    "signup": "Registrieren",
+    "login": "Einloggen",
+    "logout": "Ausloggen",
+    "otp": "OTP",
+    "forgotPassword": "Passwort Vergessen",
+    "youAreLoggedIn": "Sie sind eingeloggt.",
+    "continueWithLogin": "Mit dem Login fortfahren",
+    "or": "oder",
+    "and": "und",
+    "otpCodeWillBeSentToEmail": "*Ein einmaliger Zugangscode (OTP) wird an Ihre E-Mail zur Verifizierung gesendet.",
+    "newPassword": "Neues Passwort",
+    "reEnterPassword": "Passwort erneut eingeben",
+    "invalidEntryPoint": "Ungültiger Einstiegspunkt",
+    "errorInitializationFailed": "Fehler beim Laden von AuthUI",
+    "loading": "laden",
+    "signupWith": "Registrieren Mit",
+    "loginWith": "Einloggen mit",
+    "__components__": {
+      "login": {
+        "heading": "Einloggen ins Konto",
+        "subheading": "Bitte geben Sie Ihre E-Mail und Ihr Passwort ein, um auf Ihr Konto zuzugreifen."
+      },
+      "signup": {
+        "heading": "Registrieren",
+        "subheading": "Erstellen Sie ein neues Konto, indem Sie Ihre Daten unten ausfüllen."
+      },
+      "otp": {
+        "heading": "OTP",
+        "subheading": "*Ein einmaliger Zugangscode (OTP) wurde an Ihre E-Mail-Adresse gesendet. Bitte geben Sie ihn unten ein, um fortzufahren."
+      },
+      "lost-password": {
+        "heading": "Passwort Vergessen",
+        "subheading": "Geben Sie Ihre E-Mail-Adresse ein, um Anweisungen zum Zurücksetzen Ihres Passworts zu erhalten."
+      },
+      "reset-password": {
+        "heading": "Passwort Zurücksetzen",
+        "subheading": "Geben Sie Ihr neues Passwort ein."
+      },
+      "invite-email": {
+        "heading": "Einladung E-Mail",
+        "subheading": "Sie wurden eingeladen, beizutreten. Bitte überprüfen Sie Ihre E-Mail für weitere Anweisungen."
+      }
+    }
+  },
+  "zh": {
+    "__name__": "zh",
+    "__title__": "中文",
+    "email": "电子邮件",
+    "password": "密码",
+    "firstName": "名字",
+    "lastName": "姓氏",
+    "displayName": "显示名称",
+    "continue": "继续",
+    "back": "返回",
+    "signup": "注册",
+    "login": "登录",
+    "logout": "注销",
+    "otp": "OTP",
+    "forgotPassword": "忘记密码",
+    "youAreLoggedIn": "您已登录。",
+    "continueWithLogin": "继续登录",
+    "or": "或",
+    "and": "和",
+    "otpCodeWillBeSentToEmail": "*一次性密码（OTP）将发送到您的电子邮件进行验证。",
+    "newPassword": "新密码",
+    "reEnterPassword": "重新输入密码",
+    "invalidEntryPoint": "无效的入口点",
+    "errorInitializationFailed": "加载 AuthUI 时出错",
+    "loading": "加载中",
+    "signupWith": "使用注册",
+    "loginWith": "使用登录",
+    "__components__": {
+      "login": {
+        "heading": "登录帐户",
+        "subheading": "请输入您的电子邮件和密码以访问您的帐户。"
+      },
+      "signup": {
+        "heading": "注册",
+        "subheading": "通过填写以下详细信息创建一个新帐户。"
+      },
+      "otp": {
+        "heading": "OTP",
+        "subheading": "*一次性密码（OTP）已发送到您的电子邮件地址，请在下面输入以继续。"
+      },
+      "lost-password": {
+        "heading": "忘记密码",
+        "subheading": "输入您的电子邮件地址以接收重置密码的说明。"
+      },
+      "reset-password": {
+        "heading": "重置密码",
+        "subheading": "输入您的新密码。"
+      },
+      "invite-email": {
+        "heading": "邀请邮件",
+        "subheading": "您被邀请加入。请检查您的电子邮件以获取进一步的说明。"
+      }
+    }
+  },
+  "ru": {
+    "__name__": "ru",
+    "__title__": "Русский",
+    "email": "Электронная почта",
+    "password": "Пароль",
+    "firstName": "Имя",
+    "lastName": "Фамилия",
+    "displayName": "Имя для отображения",
+    "continue": "Продолжить",
+    "back": "Назад",
+    "signup": "Регистрация",
+    "login": "Вход",
+    "logout": "Выход",
+    "otp": "OTP",
+    "forgotPassword": "Забыли пароль",
+    "youAreLoggedIn": "Вы вошли в систему.",
+    "continueWithLogin": "Продолжить с входом",
+    "or": "или",
+    "and": "и",
+    "otpCodeWillBeSentToEmail": "*Одноразовый пароль (OTP) будет отправлен на ваш электронный адрес для подтверждения.",
+    "newPassword": "Новый пароль",
+    "reEnterPassword": "Повторите пароль",
+    "invalidEntryPoint": "Недействительная точка входа",
+    "errorInitializationFailed": "Ошибка загрузки AuthUI",
+    "loading": "загрузка",
+    "signupWith": "Зарегистрироваться с",
+    "loginWith": "Войти с",
+    "__components__": {
+      "login": {
+        "heading": "Вход в аккаунт",
+        "subheading": "Пожалуйста, введите свою электронную почту и пароль для доступа к своему аккаунту."
+      },
+      "signup": {
+        "heading": "Регистрация",
+        "subheading": "Создайте новую учетную запись, заполнив свои данные ниже."
+      },
+      "otp": {
+        "heading": "OTP",
+        "subheading": "*Одноразовый пароль (OTP) был отправлен на ваш электронный адрес. Пожалуйста, введите его ниже, чтобы продолжить."
+      },
+      "lost-password": {
+        "heading": "Забыли пароль",
+        "subheading": "Введите свой адрес электронной почты, чтобы получить инструкции по сбросу пароля."
+      },
+      "reset-password": {
+        "heading": "Сброс пароля",
+        "subheading": "Введите свой новый пароль."
+      },
+      "invite-email": {
+        "heading": "Пригласительное письмо",
+        "subheading": "Вам пришло приглашение присоединиться. Пожалуйста, проверьте свою электронную почту для получения дальнейших инструкций."
+      }
+    }
+  }
+}

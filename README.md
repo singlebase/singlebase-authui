@@ -4,6 +4,14 @@ A universal AuthUI component for authenticating users.
 
 It uses HTML custom element to be included in any pages and frameworks. 
 
+## Locales/I18N
+
+- en: English
+- es: Spanish
+- fr: French
+- de: Deutsch
+- zh: 中文 (Chinese)
+- ru: Русский (Russian)
 
 ## Tag
 
@@ -25,16 +33,17 @@ It uses HTML custom element to be included in any pages and frameworks.
   showPasswordHint:bool
   signinRedirectUrl:str
   signinCallback:Function
-  locale:str,
+  lang:str,
   locales:Object
+  theme:str
 }
 ```
 
 ### Tag Attributes
 ```
-- entry-point:
-- locale
+- lang
 - theme
+- view
 - style-round-button
 - show-back-button
 - show-signup-button

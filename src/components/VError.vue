@@ -1,9 +1,9 @@
 
 <template>
   <div class="v-form-field-error mb-4">
-    <p class="block v-form-error mt-2 mb-2">
-      <div class="font-bold">Error</div>
+    <div class="block v-form-error mt-2 mb-2">
+      <p class="font-bold">Error</p>
       <slot />
-    </p>
+    </div>
   </div>
 </template>
