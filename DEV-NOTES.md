@@ -4,13 +4,29 @@
 <singlebase-auth-ui></singlebase-auth-ui> 
 ```
 
-Feature
+Views:
+
+Account authentication and registration:
+
 - Login 
 - Signup
-- Logout 
-- OTP
 - Lost password
-- Change password 
+
+Account management:
+
+- Change Email
+- Change Password 
+- Account Info
+- Update Profile
+  - Display Name
+  - First Name 
+  - last Name 
+  - Phone Number 
+- Update Profile Photo
+
+Sub Views:
+- OTP
+- Login Success
 
 
 ### Tech

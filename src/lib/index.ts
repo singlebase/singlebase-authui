@@ -62,6 +62,11 @@ export function merge(obj1, obj2) {
 }
 
 
+/**
+ * A function to wait until a condition is fullfilled
+ * @param param0 
+ * @returns 
+ */
 export async function waitUntil({
   condition,                // Function that returns a boolean indicating if the condition is met
   action,                   // Function to execute when the condition is met

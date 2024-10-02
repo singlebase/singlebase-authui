@@ -1,8 +1,10 @@
 /**
  * app.ts
+ * Application Controller
  * 
- * Application logic 
+ * 
  */
+
 import { reactive } from 'vue'
 import { waitUntil, merge, isPlainObject, getNestedProperty, isEmpty } from './lib'
 import { generatePasswordPolicyHint } from './lib/vvalidator'
@@ -22,14 +24,25 @@ const initError = "SinglebaseAuthUIError: [client].initAuthUI() must be called b
 const settingsError = "SinglebaseAuthUIError: failed to load settings - [client].initAuthUI() must be called before accessing the Authentication UI. Visit https://docs.singlebasecloud.com/sdk/javascript"
 const configErrorSigninCallback = "SinglebaseAuthUIError: authUIConfig.signinRedirectUrl or authUIConfig.signinCallback is invalid. Visit https://docs.singlebasecloud.com/sdk/javascript"
 
-const LOGIN_VIEW = "login"
-const LOGIN_SUCCESS_VIEW = "login-success"
-const OTP_VIEW = "otp"
-const SIGNUP_VIEW = "signup"
-const LOST_PASSWORD_VIEW = "lost-password"
-const RESET_PASSWORD_VIEW = "reset-password"
-const INVITE_EMAIL_VIEW = "invite-email"
-const INVITE_EMAIL_UPDATE_ACCOUNT_VIEW = "invite-email-update-account"
+const VIEWS = {
+  ERROR: "error",
+  UNAUTHORIZED: "unauthorized",
+  LOGIN: "login",
+  LOGIN_SUCCESS: "login-success",
+  OTP: "otp",
+  SIGNUP: "signup",
+  LOST_PASSWORD: "lost-password",
+  RESET_PASSWORD: "reset-password",
+  INVITE_EMAIL: "invite-email",
+  EMAIL_UPDATE_ACCOUNT: "invite-email-update-account",
+  ACCOUNT_INFO: "account-info",
+  CHANGE_EMAIL: "change-email",
+  CHANGE_PASSWORD: "change-password",
+  UPDATE_PROFILE: "update-profile",
+  CHANGE_PROFILE_PHOTO: "change-profile-photo"
+};
+
+const NON_AUTH_VIEWS = [VIEWS.LOGIN, VIEWS.SIGNUP, VIEWS.LOST_PASSWORD]
 
 /** 
  * Settings
@@ -61,6 +74,8 @@ const INVITE_EMAIL_UPDATE_ACCOUNT_VIEW = "invite-email-update-account"
     },
  */
 
+/**  */
+const USER_DATA_FIELDS = ["_key", "_userkey", "display_name", "name", "surname", "email", "phone_number", "email_verified", "photo_url", "new_email"]
 function defaultFormData() {
   return {
     display_name: null,
@@ -71,6 +86,8 @@ function defaultFormData() {
     password2: null,
     otp: null,
     phone_number: null,
+    photo_url: null,
+    new_email: null
   }
 }
 
@@ -88,6 +105,12 @@ function defaultConfigData() {
     showSocialLogin: false,
     // @showPasswordHint:bool - show the password hint based on the settings password policy
     showPasswordHint: false,
+    // @editFullName:bool - To edit name and surname, in signup and update-profile
+    editFullName: true,
+    // @editProfilePhoneNumber - To edit phone number
+    editPhoneNumber: true,
+    // @editProfilePhoto - To edit profile photo
+    editProfilePhoto: true,
     // @signinRedirectUrl:str - url to redirect after success login, or if the page is entered
     signinRedirectUrl: null,
     // @signinCallback:Function - a function that will be triggered after success signin
@@ -98,11 +121,15 @@ function defaultConfigData() {
     signoutCallback: null, 
     // @lang:str - lang to use when locales is provided
     lang: "en", 
-    // obj locales to use
-    // {[locale]: {k/v}} -> {en: {...}, es: {...}}
+    // @locales:{[lang]: {...}, ...} - Additional lang
     locales: {},
     // @theme:str - The theme
     theme: "default",
+
+    allowUpdateProfile: true,
+    allowChangeEmail: true, 
+    allowChangePassword: true,
+    allowChangeProfilePhoto: true
   }
 }
 
@@ -117,10 +144,12 @@ const xdata: {
   otpNextAction: Function | null,
   authClient: Object|null,
   authUIConfig: Object|null,
+  useFilestore: Object|null,
 } = {
   otpNextAction: null,  // action can be a function or null
   authClient: null,
-  authUIConfig: {}
+  authUIConfig: {},
+  useFilestore: null
 };
 
 
@@ -160,19 +189,18 @@ const state = reactive({
 
 })
 
-
 //-----------------------------------------------------------------------------
-
 
 function initialize() {
   try {
     const sym = Symbol.for("singlebaseui");
     const xSym = window?.[sym]
     if (xSym) {
-      const { auth, authUIConfig={} } = xSym
+      const { auth, authUIConfig={}, useFilestore } = xSym
       if (auth) {
         xdata.authClient = auth
         xdata.authUIConfig = authUIConfig
+        xdata.useFilestore = useFilestore
         const _config = updateConfig(authUIConfig)
         if (!_config.signinRedirectUrl && !_config.signinCallback) {
           state.initialized = -1
@@ -194,9 +222,8 @@ function initialize() {
   }
 }
 
-
 /**
- * intialize the authui 
+ * initialize the authui 
  */
 async function init() {
   try {
@@ -213,8 +240,10 @@ async function init() {
         // callback + change view
         const userData = await auth.getUser()
         if (userData) {
-          setView(LOGIN_SUCCESS_VIEW)
-          await signInSuccessCallToAction(userData)
+          if (NON_AUTH_VIEWS.includes(state.view)) {
+            setView(VIEWS.LOGIN_SUCCESS)
+            await signInSuccessCallToAction(userData)
+          }
         }
 
       } else  {
@@ -236,8 +265,10 @@ async function init() {
           // callback + change view
           const userData = await auth.getUser()
           if (userData) {
-            setView(LOGIN_SUCCESS_VIEW)
-            await signInSuccessCallToAction(userData)
+            if (NON_AUTH_VIEWS.includes(state.view)) {
+              setView(VIEWS.LOGIN_SUCCESS)
+              await signInSuccessCallToAction(userData)
+            }
           }
         } else {
           console.log("singlebaseauthui: error")
@@ -255,7 +286,6 @@ async function init() {
   }
 }
 
-
 function loadSettings(settings:Object) {
   state.settings = settings
 
@@ -270,7 +300,6 @@ function resetConfig() {
 }
 
 function updateConfig(config:object) {
-
   // lang
   if (config?.lang) {
     state.lang = config.lang
@@ -306,7 +335,15 @@ function clearForm() {
 function resetPassword() {
   state.form.password = null
   state.form.password2 = null
+  state.form.new_email = null 
   state.form.otp = null
+}
+
+function resetForm() {
+  resetPassword()
+  for (const k of USER_DATA_FIELDS) {
+    state.form[k] = null 
+  }
 }
 
 function requiredFields(obj, fields) {
@@ -316,7 +353,6 @@ function requiredFields(obj, fields) {
   }
   return true;
 }
-
 
 function translate(path) {
   return getNestedProperty(state?.locales?.[state?.lang], path)
@@ -329,18 +365,16 @@ function translate(path) {
  * Return the auth client
  * @returns 
  */
-
 function getAuthClient() {
   return xdata.authClient
 }
-
 
 /**
  * set
  * @param action 
  */
 function gotoVerifyOTPNextAction(action:Function) {
-  setView(OTP_VIEW)
+  setView(VIEWS.OTP)
   xdata.otpNextAction = action
 }
 
@@ -354,6 +388,39 @@ async function otpCallToAction() {
   }
 }
 
+async function loadAuthState() {
+  const userData = await getAuthClient()?.getUser()
+  resetForm()
+  if (userData) {
+    for (const k of USER_DATA_FIELDS) {
+      state.form[k] = userData[k]
+    }
+    return true
+  } else {
+    return false
+  }
+}
+
+/**
+ * To require the auth state, and load the data if authenticated
+ * @returns 
+ */
+async function requireAuthState() {
+  setLoading(true)
+  if (!await getAuthClient()?.getUser()) {
+    setView(VIEWS.UNAUTHORIZED)
+    setLoading(false)
+    return false
+  } else {
+    if (!await loadAuthState()) {
+      setView(VIEWS.UNAUTHORIZED)
+      setLoading(false)
+    }
+    setLoading(false)
+    return true    
+  }
+}
+
 async function signout() {
   try {
     if(getAuthClient()?.isAuthenticated) {
@@ -363,7 +430,7 @@ async function signout() {
   } catch (e) { } finally {
     setLoading(false)
   }
-  setView(LOGIN_VIEW)
+  setView(VIEWS.LOGIN)
 }
 
 async function continueWithLogin() {
@@ -429,19 +496,19 @@ async function submitSigninWithPassword() {
     resetPassword()
     if (res.ok) {
       const user = await getAuthClient().getUser()
-      setView(LOGIN_SUCCESS_VIEW)
+      setView(VIEWS.LOGIN_SUCCESS)
       await signInSuccessCallToAction(user)
       return true
     } else {
       const _e = res?.error?.description
       console.log("Error", _e)
       const errorMessage = _e in ERRORS ? ERRORS[_e] : LOGIN_ERROR
-      setView(LOGIN_VIEW)
+      setView(VIEWS.LOGIN)
       setErrorMessage(errorMessage)
       return false 
     }
   } catch {
-    setView(LOGIN_VIEW)
+    setView(VIEWS.LOGIN)
     setErrorMessage(ERRORS.GENERIC)
     return false
   } finally {
@@ -509,7 +576,7 @@ async function submitSignupWithPassword() {
       const _e = res?.error?.description
       const errorMessage = ERRORS?.[_e] ?? ERRORS.INVALID_EMAIL_SIGNUP
       resetPassword()
-      setView(SIGNUP_VIEW)
+      setView(VIEWS.SIGNUP)
       setErrorMessage(errorMessage)
       return false
     }
@@ -522,7 +589,6 @@ async function submitSignupWithPassword() {
   }
 }
 
-
 //== FORGOT PASSWORD
 async function submitLostPassword() {
   try {
@@ -534,7 +600,7 @@ async function submitLostPassword() {
         intent: "change_password"
       })
     if (resp.ok) {
-      gotoVerifyOTPNextAction(() => setView(RESET_PASSWORD_VIEW))
+      gotoVerifyOTPNextAction(() => setView(VIEWS.RESET_PASSWORD))
       return true
     } else {
       setErrorMessage(ERRORS.GENERIC)
@@ -566,7 +632,7 @@ async function submitResetPassword() {
     if (resp.ok) {
       // return to login 
       resetPassword()
-      setView(LOGIN_VIEW)
+      setView(VIEWS.LOGIN)
       return true 
     } else {
       setErrorMessage(ERRORS.GENERIC)
@@ -581,7 +647,6 @@ async function submitResetPassword() {
   }
 }
 
-
 //== INVITE EMAIL
 async function submitInviteEmail() {
   try {
@@ -592,7 +657,7 @@ async function submitInviteEmail() {
         intent: "invite"
       })
     if (resp.ok) {
-      gotoVerifyOTPNextAction(() => setView(INVITE_EMAIL_UPDATE_ACCOUNT_VIEW))
+      gotoVerifyOTPNextAction(() => setView(VIEWS.EMAIL_UPDATE_ACCOUNT))
       return true
     }  else {
       setErrorMessage(ERRORS.GENERIC)
@@ -626,7 +691,7 @@ async function submitInviteEmailUpdateAccount() {
 
     const resp = await getAuthClient().signInWithPassword(creds)
     if (resp.ok) {
-      setView(LOGIN_VIEW)
+      setView(VIEWS.LOGIN)
       return true
     }  else {
       setErrorMessage(ERRORS.GENERIC)
@@ -640,6 +705,202 @@ async function submitInviteEmailUpdateAccount() {
   }
 }
 
+// === UPDATE PROFILE
+async function updateProfile() {
+  try {
+    setErrorMessage(null)
+    setLoading(true)
+
+    const data = {
+      display_name: state.form.display_name,
+    }
+    
+    if (state.config.editFullName) {
+      data["name"] = state?.form?.name || state?.form?.display_name
+      data["surname"] = state?.form?.surname || state?.form?.display_name
+    }
+
+    if (state.config?.editPhoneNumber && state.form?.phone_number) {
+      data["phone_number"] = state.form?.phone_number
+    }
+
+    const res = await getAuthClient().updateProfile(data)
+    if (res.ok) {
+      setView(VIEWS.ACCOUNT_INFO)
+      return true;
+    } else {
+      const _e = res?.error?.description
+      const errorMessage = ERRORS?.[_e] ?? ERRORS.GENERIC
+      resetPassword()
+      setView(VIEWS.UNAUTHORIZED)
+      setErrorMessage(errorMessage)
+      return false
+    }
+  } catch (e) {
+    resetPassword()
+    setErrorMessage(ERRORS.GENERIC)
+    return false
+  } finally {
+    setLoading(false)
+  }
+}
+
+// === CHANGE EMAIL
+async function changeEmail() {
+  try {
+    setErrorMessage(null)
+    setLoading(true)
+
+    if (state?.settings?.mfa) {
+      const data = {
+          email: state.form.email, 
+          intent: "change_email"
+      }
+      const resp = await getAuthClient().sendOTP(data)
+      if (resp.ok) {
+        gotoVerifyOTPNextAction(submitChangeEmail)
+        return true
+      } else {
+        setErrorMessage(ERRORS.GENERIC)
+        resetPassword()
+      }
+    } else {
+      return submitChangeEmail()
+    }
+  } catch (e) {
+    setErrorMessage(ERRORS.GENERIC)
+    return false
+  } finally {
+    setLoading(false)
+  }
+}
+
+async function submitChangeEmail() {
+  try {
+    setErrorMessage(null)
+    setLoading(true)
+    const data = {
+      email: state.form.email,
+      new_email: state.form.new_email,
+      intent: 'change_email'
+    } 
+    if (state?.settings?.mfa) {
+      data.otp = state.form.otp
+    }
+    const res = await getAuthClient().updateAccount(data)
+    resetPassword()
+    if (res.ok) {
+      const user = await getAuthClient().getUser()
+      setView(VIEWS.ACCOUNT_INFO)
+      await signInSuccessCallToAction(user)
+      return true
+    } else {
+      const _e = res?.error?.description
+      console.log("Error", _e)
+      const errorMessage = _e in ERRORS ? ERRORS[_e] : ERRORS.GENERIC
+      setView(VIEWS.ERROR)
+      setErrorMessage(errorMessage)
+      return false 
+    }
+  } catch {
+    setView(VIEWS.ACCOUNT_INFO)
+    setErrorMessage(ERRORS.GENERIC)
+    return false
+  } finally {
+    setLoading(false)
+  }
+}
+
+// === CHANGE PASSWORD
+async function changePassword() {
+  try {
+    setErrorMessage(null)
+    setLoading(true)
+
+    if (state?.settings?.mfa) {
+      const data = {
+          email: state.form.email, 
+          intent: "change_password"
+      }
+      const resp = await getAuthClient().sendOTP(data)
+      if (resp.ok) {
+        gotoVerifyOTPNextAction(submitChangePassword)
+        return true
+      } else {
+        setErrorMessage(ERRORS.GENERIC)
+        resetPassword()
+      }
+    } else {
+      return submitChangePassword()
+    }
+  } catch (e) {
+    setErrorMessage(ERRORS.GENERIC)
+    return false
+  } finally {
+    setLoading(false)
+  }
+}
+
+async function submitChangePassword() {
+  try {
+    setErrorMessage(null)
+    setLoading(true)
+    const data = {
+      email: state.form.email,
+      new_password: state.form.password,
+      intent: 'change_password'
+    } 
+    if (state?.settings?.mfa) {
+      data.otp = state.form.otp
+    }
+    const res = await getAuthClient().updateAccount(data)
+    resetPassword()
+    if (res.ok) {
+      const user = await getAuthClient().getUser()
+      setView(VIEWS.ACCOUNT_INFO)
+      await signInSuccessCallToAction(user)
+      return true
+    } else {
+      const _e = res?.error?.description
+      console.log("Error", _e)
+      const errorMessage = _e in ERRORS ? ERRORS[_e] : ERRORS.GENERIC
+      setView(VIEWS.ERROR)
+      setErrorMessage(errorMessage)
+      return false 
+    }
+  } catch {
+    setView(VIEWS.ACCOUNT_INFO)
+    setErrorMessage(ERRORS.GENERIC)
+    return false
+  } finally {
+    setLoading(false)
+  }
+}
+
+// === UPLOAD PHOTO
+async function uploadProfilePhoto(file) {
+  setErrorMessage(null)
+  setLoading(true)
+  try {
+    const filestore = xdata.useFilestore()
+    const opts = {
+      public_read: true, 
+      options: {
+        profilephoto: true
+      }
+    }
+    const res = await filestore.upload(file, opts)
+    if (res.ok) {
+      state.form.photo_url = res?.data?.url
+      await getAuthClient().refreshSession()
+    }
+  } catch (e) {
+    console.error(e)
+  } finally {
+    setLoading(false)
+  }
+  setView(VIEWS.ACCOUNT_INFO)
+}
 
 export default {
   $: state, // shortcut 
@@ -652,14 +913,19 @@ export default {
   // --- // --- // ---
   // Actions
   initialize,
+  requireAuthState,
   otpCallToAction,
   signout,
   continueWithLogin,
   signinWithPassword,
-  submitSigninWithPassword,
   signupWithPassword,
+  updateProfile,
+  changeEmail,
+  changePassword,
+  uploadProfilePhoto,
+
+  submitSigninWithPassword,
   submitSignupWithPassword,
   submitLostPassword,
-  submitResetPassword
+  submitResetPassword,
 }
-

@@ -35,6 +35,11 @@ import OtpView from './views/otp.vue';
 import SignupView from './views/signup.vue';
 import LoginSuccessView from './views/login-success.vue';
 import ResetPasswordView from './views/reset-password.vue';
+import AccountInfoView from './views/account-info.vue';
+import UpdateProfileView from './views/update-profile.vue';
+import ChangeProfilePhotoView from './views/change-profile-photo.vue';
+import ChangeEmailView from './views/change-email.vue';
+import ChangePasswordView from './views/change-password.vue';
 
 //=== set up props
 const props = defineProps({
@@ -47,6 +52,8 @@ const props = defineProps({
   showForgotPasswordButton: {type: Boolean, default: null},
   showSocialLogin: {type: Boolean, default: null},
 })
+
+const VALID_ENTRY_POINTS = ["login", "signup", "lost-password", "update-profile", "account-info", "change-email", "change-password", "change-profile-photo"]
 
 const $view = computed(() => app.$.view) 
 const $config = computed(() => app.$.config)
@@ -89,10 +96,23 @@ async function setup() {
   }
 
   //== use the entry point 
-  const validEntryPoints = ["login", "signup", "lost-password"]
-  if (props?.view && validEntryPoints.includes(props?.view)) {
+  if (props?.view && VALID_ENTRY_POINTS.includes(props?.view)) {
     app.setView(props?.view)
   }
+}
+
+function goBack() {
+  const _default = 'login'
+  const paths = {
+    'signup': 'login',
+    'account-info': '',
+    'update-profile': 'account-info',
+    'change-email': 'account-info',
+    'change-password': 'account-info',
+    'change-profile-photo': 'account-info'
+  }
+  const path = paths?.[$view.value] ?? _default
+  app.setView(path)
 }
 
 // mounting
@@ -111,18 +131,23 @@ onMounted(async () => {
 
 <template>
 
-<!-- <div>
+<div>
   <button class="v-btn-ghost" @click="app.setView('login')">Login</button> - 
   <button class="v-btn-ghost" @click="app.setView('signup')">Signup</button> - 
   <button class="v-btn-ghost" @click="app.setView('otp')">Otp</button> -
   <button class="v-btn-ghost" @click="app.setView('lost-password')">Lost Password</button> - 
-  <button class="v-btn-ghost" @click="app.setView('reset-password')">Reset Password</button> 
+  <button class="v-btn-ghost" @click="app.setView('reset-password')">Reset Password</button> - 
+  <button class="v-btn-ghost" @click="app.setView('account-info')">Account Info</button> - 
+  <button class="v-btn-ghost" @click="app.setView('change-email')">Change Email</button> - 
+  <button class="v-btn-ghost" @click="app.setView('change-password')">Change Password</button> -  
+  <button class="v-btn-ghost" @click="app.setView('update-profile')">Update Profile</button> - 
+  <button class="v-btn-ghost" @click="app.setView('change-profile-photo')">Change Profile Photo</button> - 
+
   <br>
-</div> -->
+</div>
 
  
   <div class="sm:w-full sm:max-w-xl ">
-
 
     <div v-if="app.$.initialized === 0" class="my-4">
         <VSpinner :text="$t('loading')"/>
@@ -132,7 +157,7 @@ onMounted(async () => {
         <VError>{{ $t('errorInitializationFailed') }}</VError>
     </div>
 
-    <div v-if="app.$.initialized === 1"  class="bg-s---late-50 p-8 mx-auto rounded-xl ">
+    <div v-if="app.$.initialized === 1"  class="p-2 mx-auto rounded-xl ">
 
       <!-- header -->
       <div><slot name="header" /></div>
@@ -143,7 +168,7 @@ onMounted(async () => {
         <!-- headnav -->
         <fieldset class="v-form-fieldset" :disabled="app.$.loading">
           <div v-if="$view !== 'login-success'" class="flex justify-between ">
-            <div><button v-if="$config.showBackButton && $view !== 'login'"  :class="[$config.styleRoundButton ? '' : '']" class="v-btn-ghost v-btn-sm mb-4" @click="app.setView('login')">&larr; {{ $t('back') }}</button></div>
+            <div><button v-if="$config.showBackButton && $view !== 'login'"  :class="[$config.styleRoundButton ? '' : '']" class="v-btn-ghost v-btn-sm mb-4" @click="goBack">&larr; {{ $t('back') }}</button></div>
             <div><button v-if="$config.showSignupButton && $view === 'login'"  :class="[$config.styleRoundButton ? '' : '']" class="v-btn-ghost v-btn-sm mb-4" @click="app.setView('signup')">{{ $t('signup')}} &rarr; </button></div>
           </div>
         </fieldset>
@@ -166,13 +191,19 @@ onMounted(async () => {
 
         <!-- views -->
         <fieldset class="v-form-fieldset" v-show="!app.$.loading" >
-              <LoginView v-if="$view == 'login'" />
-              <SignupView v-else-if="$view == 'signup'" />
-              <LostPasswordView v-else-if="$view == 'lost-password'" />
-              <OtpView v-else-if="$view == 'otp'" />
-              <LoginSuccessView v-else-if="$view == 'login-success'" />
-              <ResetPasswordView v-else-if="$view == 'reset-password'" />
-              <div v-else><VError>{{ $t('invalidEntryPoint') }}</VError></div>              
+            <LoginView v-if="$view == 'login'" />
+            <SignupView v-else-if="$view == 'signup'" />
+            <LostPasswordView v-else-if="$view == 'lost-password'" />
+            <OtpView v-else-if="$view == 'otp'" />
+            <LoginSuccessView v-else-if="$view == 'login-success'" />
+            <ResetPasswordView v-else-if="$view == 'reset-password'" />
+            <AccountInfoView v-else-if="$view == 'account-info'" />
+            <UpdateProfileView v-else-if="$view == 'update-profile'" />
+            <ChangeEmailView v-else-if="$view == 'change-email'" />
+            <ChangePasswordView v-else-if="$view == 'change-password'" />
+            <ChangeProfilePhotoView v-else-if="$view == 'change-profile-photo'" />
+            <div v-else-if="$view === 'unauthorized'"><VError>{{ $t('unauthorized') }}</VError></div>              
+            <div v-else><VError>{{ $t('invalidView') }}</VError></div>              
         </fieldset>
 
       </div>
@@ -185,3 +216,4 @@ onMounted(async () => {
   </div>
 
 </template>
+./app-01

@@ -1,7 +1,12 @@
 <script setup>
-import { computed } from 'vue';
+/**
+ * To change password it requires OTP
+ * 1. Capture new password
+ * 2. Send OTP
+ * 3. Update and return
+ */
+import { computed, onMounted } from 'vue';
 import VFormField from '../components/VFormField.vue';
-import VSocialLogin from '../components/VSocialLogin.vue';
 import Validator, { validatePasswordPolicy } from '../lib/vvalidator'
 import app from '../app';
 
@@ -10,16 +15,12 @@ const $settings = app.$.settings
 const $t = app.translate
 
 const validations = {
-  "email": ["required", "email"],
-  "password": ["required", "validateWithPasswordPolicy"],
-  "display_name": ["required", "name"],
-  "surname": ["required", "name"]
+  "password": ["required", "sameAs(password2)", "validateWithPasswordPolicy"],
+  "password2": ["required"],
 }
 const fieldNames = {
-  "email": $t('email'),
-  "password": $t('password'),
-  "display_name": $t('firstName'),
-  "surname": $t('lastName')
+    "password": "Password",
+    "password2": "The password below"
 }
 
 const $validator = new Validator({validations, fieldNames}, app.$.form)
@@ -29,32 +30,33 @@ $validator.addCustomValidation('validateWithPasswordPolicy', (value) => validate
 async function validateAndContinue() {
   const [validated, errors] = $validator.validate()
   if (validated) {
-    await app.signupWithPassword()
+    await app.changePassword()
   } else {
     console.log("Error", validated, errors)
   }
 }
 
+onMounted(async () => {
+  await app?.requireAuthState()
+})
+
 </script>
 <template>
-  <div singlebase-auth-ui-signup-view>
+  <div>
     <form @submit.prevent="validateAndContinue">
       <div>
-          <VFormField :label="$t('email')" :error="$validator?.get('email')">
-            <input class="v-form-input" type="text" v-model="app.$.form.email">
-          </VFormField>
-
-          <VFormField :label="$t('password')" :hint="$config.showPasswordHint ? $settings?.passwordHint : null" :error="$validator?.get('password')">
+          <div class="mb-10">
+            <div class="v-form-label">{{ $t('currentEmail') }}</div>
+            <div class="v-text mt-2 font-bold text-slate-700">{{ app?.$?.form?.email }}</div>
+          </div>
+          
+          <VFormField :label="$t('newPassword')" :error="$validator?.get('password')">
             <input class="v-form-input" type="password" v-model="app.$.form.password">
           </VFormField>
-
-          <VFormField :label="$t('firstName')" :error="$validator?.get('display_name')">
-            <input class="v-form-input" type="text" v-model="app.$.form.display_name">
+          <VFormField :label="$t('reEnterPassword')">
+            <input class="v-form-input" type="password" v-model="app.$.form.password2">
           </VFormField>
 
-          <VFormField :label="$t('lastName')" :error="$validator?.get('surname')">
-            <input class="v-form-input" type="text" v-model="app.$.form.surname">
-          </VFormField>
 
           <p v-if="$settings.mfa" class="text-xs text-gray-600 v-text my-4">{{ $t('otpCodeWillBeSentToEmail') }}</p>
 
@@ -63,8 +65,6 @@ async function validateAndContinue() {
           </div>
       </div>
     </form>
-
-    <VSocialLogin  v-if="$config.showSocialLogin" :prefix="$t('signupWith')"/>
 
   </div>
 </template>../app-01

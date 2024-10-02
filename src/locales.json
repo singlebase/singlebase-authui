@@ -19,13 +19,28 @@
     "or": "or",
     "and": "and",
     "otpCodeWillBeSentToEmail": "*A one time passcode (OTP) will be sent to your email for verification.",
+    "newEmail": "New Email",
     "newPassword": "New Password",
     "reEnterPassword": "Re-enter Password",
     "invalidEntryPoint": "Invalid entry point",
     "errorInitializationFailed": "Error Loading AuthUI",
     "loading": "loading",
     "signupWith": "Signup With",
-    "loginWith": "Login with",
+    "loginWith": "Login With",
+    "profilePhoto": "Profile Photo",
+    "change": "Change",
+    "phoneNumber": "Phone Number",
+    "invalidView": "Invalid View",
+    "unauthorized": "Unauthorized",
+    "profilePhotoNotUploadedYet": "*Profile Photo has not been uploaded yet",
+    "updateProfile": "Update Profile",
+    "changeProfilePhoto": "Change Profile Photo",
+    "changeEmail": "Change Email",
+    "changePassword": "Change Password",
+    "sendOTP": "Send one time passcode (OTP)",
+    "toChangeEmailSendOTP": "To change your email, a one time passcode (OTP) will be sent to your email for verification.",
+    "toChangePasswordSendOTP": "To change your password, a one time passcode (OTP) will be sent to your email for verification.",
+    "currentEmail": "Current Email",
     "__components__": {
       "login": {
         "heading": "Login to account",
@@ -50,6 +65,26 @@
       "invite-email": {
         "heading": "Invite Email",
         "subheading": "You've been invited to join. Please check your email for further instructions."
+      },
+      "account-info": {
+        "heading": "Account Info",
+        "subheading": "View and manage your account information."
+      },
+      "change-email": {
+        "heading": "Change Email",
+        "subheading": "Update your email address."
+      },
+      "change-password": {
+        "heading": "Change Password",
+        "subheading": "Update your password."
+      },
+      "update-profile": {
+        "heading": "Update Profile",
+        "subheading": "Modify your profile details."
+      },
+      "change-profile-photo": {
+        "heading": "Change Profile Photo",
+        "subheading": "Upload a new profile picture."
       }
     }
   },
@@ -73,6 +108,7 @@
     "or": "o",
     "and": "y",
     "otpCodeWillBeSentToEmail": "*Un código de acceso único (OTP) se enviará a tu correo electrónico para la verificación.",
+    "newEmail": "Nuevo Correo Electrónico",
     "newPassword": "Nueva Contraseña",
     "reEnterPassword": "Reingresa la Contraseña",
     "invalidEntryPoint": "Punto de entrada inválido",
@@ -80,6 +116,20 @@
     "loading": "cargando",
     "signupWith": "Registrarse Con",
     "loginWith": "Iniciar Sesión con",
+    "profilePhoto": "Foto de Perfil",
+    "change": "Cambiar",
+    "phoneNumber": "Número de Teléfono",
+    "invalidView": "Vista Inválida",
+    "unauthorized": "No Autorizado",
+    "profilePhotoNotUploadedYet": "*La Foto de Perfil aún no ha sido subida.",
+    "updateProfile": "Actualizar Perfil",
+    "changeProfilePhoto": "Cambiar Foto de Perfil",
+    "changeEmail": "Cambiar Correo Electrónico",
+    "changePassword": "Cambiar Contraseña",
+    "sendOTP": "Enviar código de acceso único (OTP)",
+    "toChangeEmailSendOTP": "Para cambiar tu correo electrónico, se enviará un código de acceso único (OTP) a tu correo electrónico para la verificación.",
+    "toChangePasswordSendOTP": "Para cambiar tu contraseña, se enviará un código de acceso único (OTP) a tu correo electrónico para la verificación.",
+    "currentEmail": "Correo Electrónico Actual",
     "__components__": {
       "login": {
         "heading": "Iniciar Sesión en la Cuenta",
@@ -104,6 +154,26 @@
       "invite-email": {
         "heading": "Correo de Invitación",
         "subheading": "Has sido invitado a unirte. Por favor, revisa tu correo electrónico para más instrucciones."
+      },
+      "account-info": {
+        "heading": "Información de la Cuenta",
+        "subheading": "Ver y gestionar la información de tu cuenta."
+      },
+      "change-email": {
+        "heading": "Cambiar Correo Electrónico",
+        "subheading": "Actualiza tu dirección de correo electrónico."
+      },
+      "change-password": {
+        "heading": "Cambiar Contraseña",
+        "subheading": "Actualiza tu contraseña."
+      },
+      "update-profile": {
+        "heading": "Actualizar Perfil",
+        "subheading": "Modifica los detalles de tu perfil."
+      },
+      "change-profile-photo": {
+        "heading": "Cambiar Foto de Perfil",
+        "subheading": "Sube una nueva foto de perfil."
       }
     }
   },
@@ -127,6 +197,7 @@
     "or": "ou",
     "and": "et",
     "otpCodeWillBeSentToEmail": "*Un code d'accès unique (OTP) sera envoyé à votre email pour vérification.",
+    "newEmail": "Nouvel Email",
     "newPassword": "Nouveau Mot de Passe",
     "reEnterPassword": "Ressaisir le Mot de Passe",
     "invalidEntryPoint": "Point d'entrée invalide",
@@ -134,6 +205,20 @@
     "loading": "chargement",
     "signupWith": "S'inscrire Avec",
     "loginWith": "Se Connecter avec",
+    "profilePhoto": "Photo de Profil",
+    "change": "Changer",
+    "phoneNumber": "Numéro de Téléphone",
+    "invalidView": "Vue Invalide",
+    "unauthorized": "Non Autorisé",
+    "profilePhotoNotUploadedYet": "*La Photo de Profil n'a pas encore été téléchargée.",
+    "updateProfile": "Mettre à Jour le Profil",
+    "changeProfilePhoto": "Changer la Photo de Profil",
+    "changeEmail": "Changer l'Email",
+    "changePassword": "Changer le Mot de Passe",
+    "sendOTP": "Envoyer un code d'accès unique (OTP)",
+    "toChangeEmailSendOTP": "Pour changer votre email, un code d'accès unique (OTP) sera envoyé à votre email pour vérification.",
+    "toChangePasswordSendOTP": "Pour changer votre mot de passe, un code d'accès unique (OTP) sera envoyé à votre email pour vérification.",
+    "currentEmail": "Email Actuel",
     "__components__": {
       "login": {
         "heading": "Connexion au Compte",
@@ -158,6 +243,26 @@
       "invite-email": {
         "heading": "Email d'Invitation",
         "subheading": "Vous avez été invité à rejoindre. Veuillez vérifier votre email pour plus d'instructions."
+      },
+      "account-info": {
+        "heading": "Informations du Compte",
+        "subheading": "Voir et gérer les informations de votre compte."
+      },
+      "change-email": {
+        "heading": "Changer l'Email",
+        "subheading": "Mettez à jour votre adresse email."
+      },
+      "change-password": {
+        "heading": "Changer le Mot de Passe",
+        "subheading": "Mettez à jour votre mot de passe."
+      },
+      "update-profile": {
+        "heading": "Mettre à Jour le Profil",
+        "subheading": "Modifiez les détails de votre profil."
+      },
+      "change-profile-photo": {
+        "heading": "Changer la Photo de Profil",
+        "subheading": "Téléchargez une nouvelle photo de profil."
       }
     }
   },
@@ -181,6 +286,7 @@
     "or": "oder",
     "and": "und",
     "otpCodeWillBeSentToEmail": "*Ein einmaliger Zugangscode (OTP) wird an Ihre E-Mail zur Verifizierung gesendet.",
+    "newEmail": "Neue E-Mail",
     "newPassword": "Neues Passwort",
     "reEnterPassword": "Passwort erneut eingeben",
     "invalidEntryPoint": "Ungültiger Einstiegspunkt",
@@ -188,6 +294,20 @@
     "loading": "laden",
     "signupWith": "Registrieren Mit",
     "loginWith": "Einloggen mit",
+    "profilePhoto": "Profilfoto",
+    "change": "Ändern",
+    "phoneNumber": "Telefonnummer",
+    "invalidView": "Ungültige Ansicht",
+    "unauthorized": "Nicht autorisiert",
+    "profilePhotoNotUploadedYet": "*Das Profilfoto wurde noch nicht hochgeladen.",
+    "updateProfile": "Profil Aktualisieren",
+    "changeProfilePhoto": "Profilfoto Ändern",
+    "changeEmail": "E-Mail Ändern",
+    "changePassword": "Passwort Ändern",
+    "sendOTP": "Einmaligen Zugangscode (OTP) senden",
+    "toChangeEmailSendOTP": "Um Ihre E-Mail zu ändern, wird ein einmaliger Zugangscode (OTP) an Ihre E-Mail zur Verifizierung gesendet.",
+    "toChangePasswordSendOTP": "Um Ihr Passwort zu ändern, wird ein einmaliger Zugangscode (OTP) an Ihre E-Mail zur Verifizierung gesendet.",
+    "currentEmail": "Aktuelle E-Mail",
     "__components__": {
       "login": {
         "heading": "Einloggen ins Konto",
@@ -212,6 +332,26 @@
       "invite-email": {
         "heading": "Einladung E-Mail",
         "subheading": "Sie wurden eingeladen, beizutreten. Bitte überprüfen Sie Ihre E-Mail für weitere Anweisungen."
+      },
+      "account-info": {
+        "heading": "Kontoinformationen",
+        "subheading": "Sehen Sie sich Ihre Kontoinformationen an und verwalten Sie diese."
+      },
+      "change-email": {
+        "heading": "E-Mail Ändern",
+        "subheading": "Aktualisieren Sie Ihre E-Mail-Adresse."
+      },
+      "change-password": {
+        "heading": "Passwort Ändern",
+        "subheading": "Aktualisieren Sie Ihr Passwort."
+      },
+      "update-profile": {
+        "heading": "Profil Aktualisieren",
+        "subheading": "Ändern Sie die Details Ihres Profils."
+      },
+      "change-profile-photo": {
+        "heading": "Profilfoto Ändern",
+        "subheading": "Laden Sie ein neues Profilfoto hoch."
       }
     }
   },
@@ -235,6 +375,7 @@
     "or": "或",
     "and": "和",
     "otpCodeWillBeSentToEmail": "*一次性密码（OTP）将发送到您的电子邮件进行验证。",
+    "newEmail": "新电子邮件",
     "newPassword": "新密码",
     "reEnterPassword": "重新输入密码",
     "invalidEntryPoint": "无效的入口点",
@@ -242,6 +383,20 @@
     "loading": "加载中",
     "signupWith": "使用注册",
     "loginWith": "使用登录",
+    "profilePhoto": "个人资料照片",
+    "change": "改变",
+    "phoneNumber": "电话号码",
+    "invalidView": "无效视图",
+    "unauthorized": "未授权",
+    "profilePhotoNotUploadedYet": "*个人资料照片尚未上传。",
+    "updateProfile": "更新资料",
+    "changeProfilePhoto": "更改个人资料照片",
+    "changeEmail": "更改电子邮件",
+    "changePassword": "更改密码",
+    "sendOTP": "发送一次性密码（OTP）",
+    "toChangeEmailSendOTP": "要更改您的电子邮件，将向您的电子邮件发送一次性密码（OTP）以进行验证。",
+    "toChangePasswordSendOTP": "要更改您的密码，将向您的电子邮件发送一次性密码（OTP）以进行验证。",
+    "currentEmail": "当前电子邮件",
     "__components__": {
       "login": {
         "heading": "登录帐户",
@@ -266,6 +421,26 @@
       "invite-email": {
         "heading": "邀请邮件",
         "subheading": "您被邀请加入。请检查您的电子邮件以获取进一步的说明。"
+      },
+      "account-info": {
+        "heading": "帐户信息",
+        "subheading": "查看并管理您的帐户信息。"
+      },
+      "change-email": {
+        "heading": "更改电子邮件",
+        "subheading": "更新您的电子邮件地址。"
+      },
+      "change-password": {
+        "heading": "更改密码",
+        "subheading": "更新您的密码。"
+      },
+      "update-profile": {
+        "heading": "更新资料",
+        "subheading": "修改您的资料详细信息。"
+      },
+      "change-profile-photo": {
+        "heading": "更改个人资料照片",
+        "subheading": "上传新的个人资料照片。"
       }
     }
   },
@@ -289,6 +464,7 @@
     "or": "или",
     "and": "и",
     "otpCodeWillBeSentToEmail": "*Одноразовый пароль (OTP) будет отправлен на ваш электронный адрес для подтверждения.",
+    "newEmail": "Новый адрес электронной почты",
     "newPassword": "Новый пароль",
     "reEnterPassword": "Повторите пароль",
     "invalidEntryPoint": "Недействительная точка входа",
@@ -296,6 +472,20 @@
     "loading": "загрузка",
     "signupWith": "Зарегистрироваться с",
     "loginWith": "Войти с",
+    "profilePhoto": "Фото профиля",
+    "change": "Изменить",
+    "phoneNumber": "Номер телефона",
+    "invalidView": "Недействительный вид",
+    "unauthorized": "Не авторизован",
+    "profilePhotoNotUploadedYet": "*Фото профиля еще не загружено.",
+    "updateProfile": "Обновить профиль",
+    "changeProfilePhoto": "Изменить фото профиля",
+    "changeEmail": "Изменить адрес электронной почты",
+    "changePassword": "Изменить пароль",
+    "sendOTP": "Отправить одноразовый пароль (OTP)",
+    "toChangeEmailSendOTP": "Чтобы изменить ваш адрес электронной почты, одноразовый пароль (OTP) будет отправлен на ваш электронный адрес для подтверждения.",
+    "toChangePasswordSendOTP": "Чтобы изменить ваш пароль, одноразовый пароль (OTP) будет отправлен на ваш электронный адрес для подтверждения.",
+    "currentEmail": "Текущий адрес электронной почты",
     "__components__": {
       "login": {
         "heading": "Вход в аккаунт",
@@ -320,6 +510,26 @@
       "invite-email": {
         "heading": "Пригласительное письмо",
         "subheading": "Вам пришло приглашение присоединиться. Пожалуйста, проверьте свою электронную почту для получения дальнейших инструкций."
+      },
+      "account-info": {
+        "heading": "Информация об аккаунте",
+        "subheading": "Просмотрите и управляйте информацией о своем аккаунте."
+      },
+      "change-email": {
+        "heading": "Изменить адрес электронной почты",
+        "subheading": "Обновите свой адрес электронной почты."
+      },
+      "change-password": {
+        "heading": "Изменить пароль",
+        "subheading": "Обновите свой пароль."
+      },
+      "update-profile": {
+        "heading": "Обновить профиль",
+        "subheading": "Измените детали своего профиля."
+      },
+      "change-profile-photo": {
+        "heading": "Изменить фото профиля",
+        "subheading": "Загрузите новое фото профиля."
       }
     }
   }

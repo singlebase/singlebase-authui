@@ -4,6 +4,23 @@ A universal AuthUI component for authenticating users.
 
 It uses HTML custom element to be included in any pages and frameworks. 
 
+## Views
+
+Account authentication and registration:
+
+- Login 
+- Signup
+- Lost password
+
+Account management:
+
+- Change Email
+- Change Password 
+- Account Info
+- Update Profile 
+- Update Profile Photo
+
+
 ## Locales/I18N
 
 The library provides the following languages by default:
