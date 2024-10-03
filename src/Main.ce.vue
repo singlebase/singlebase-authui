@@ -131,7 +131,7 @@ onMounted(async () => {
 
 <template>
 
-<div>
+<!-- <div>
   <button class="v-btn-ghost" @click="app.setView('login')">Login</button> - 
   <button class="v-btn-ghost" @click="app.setView('signup')">Signup</button> - 
   <button class="v-btn-ghost" @click="app.setView('otp')">Otp</button> -
@@ -144,7 +144,7 @@ onMounted(async () => {
   <button class="v-btn-ghost" @click="app.setView('change-profile-photo')">Change Profile Photo</button> - 
 
   <br><br><br><br>
-</div>
+</div> -->
 
  
   <div class="bg-slate-50 py-2 rounded-lg sm:w-full sm:max-w-xl ">
