@@ -4,16 +4,17 @@
 
 
 @layer utilities {
+  
   .__input-style { @apply block w-full text-xl rounded-md border-0 py-2 text-slate-800 shadow-sm ring-1 ring-inset ring-slate-300 placeholder:text-slate-400 focus:ring-2 focus:ring-inset focus:ring-slate-500 sm:text-sm sm:leading-6  } 
   .__disabled { @apply disabled:opacity-60 } 
 
-  .v-container {@apply mx-auto sm:max-w-4xl }
-
+  .v-text {@apply tracking-widest }
+  
   .v-heading { @apply text-xl text-slate-700 font-black uppercase tracking-widest}
   .v-heading-section { @apply text-lg font-light text-slate-700 tracking-widest}
   .v-heading-title { @apply text-lg font-bold text-slate-700}
   .v-heading-description { @apply font-light text-sm text-slate-600 tracking-widest}
-  .v-text {@apply tracking-widest }
+
 
   /** btn **/
   ._btn_base {@apply rounded-lg  px-3.5 py-2.5 text-sm font-semibold tracking-widest }

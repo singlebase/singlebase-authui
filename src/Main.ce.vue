@@ -143,11 +143,11 @@ onMounted(async () => {
   <button class="v-btn-ghost" @click="app.setView('update-profile')">Update Profile</button> - 
   <button class="v-btn-ghost" @click="app.setView('change-profile-photo')">Change Profile Photo</button> - 
 
-  <br>
+  <br><br><br><br>
 </div>
 
  
-  <div class="sm:w-full sm:max-w-xl ">
+  <div class="bg-slate-50 py-2 rounded-lg sm:w-full sm:max-w-xl ">
 
     <div v-if="app.$.initialized === 0" class="my-4">
         <VSpinner :text="$t('loading')"/>
@@ -216,4 +216,3 @@ onMounted(async () => {
   </div>
 
 </template>
-./app-01

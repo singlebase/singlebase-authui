@@ -133,7 +133,7 @@ function defaultConfigData() {
   }
 }
 
-function defaultLangData(lang="en") {
+function defaultLangData() {
   return { ...LOCALES["en"] }
 }
 

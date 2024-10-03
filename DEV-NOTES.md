@@ -29,6 +29,21 @@ Sub Views:
 - Login Success
 
 
+To do:
+- Styling
+  - flat
+  - widget: p-8 (default)
+  - theme
+    - light (slate-100)
+    - dark (slate-900)
+  
+  - text-primary (ie: heading)
+  - text-secondary (ie: subheading)
+  - text-accent 
+  - button-primary
+  - button-secondary
+  - button-accent
+
 ### Tech
 
 - Require singlebase.js
