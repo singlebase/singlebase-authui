@@ -159,7 +159,8 @@ const state = reactive({
   initialized: 0, 
   // @loading:bool - when true, the system shows a loading spinner
   loading: false,
-  // @loading:null|String - an error message to display
+  // @loadingText:str - the text message to show
+  loadingText: 'loading...',
   error: null,
   // @view:string -  the current view
   view: null,

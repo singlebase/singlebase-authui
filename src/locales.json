@@ -41,6 +41,8 @@
     "toChangeEmailSendOTP": "To change your email, a one time passcode (OTP) will be sent to your email for verification.",
     "toChangePasswordSendOTP": "To change your password, a one time passcode (OTP) will be sent to your email for verification.",
     "currentEmail": "Current Email",
+    "authenticating": "Authenticating...",
+ 
     "__components__": {
       "login": {
         "heading": "Login to account",
