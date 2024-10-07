@@ -12,7 +12,7 @@ const $t = app.translate
 <template>
   <div class="v-heading-description mb-6 flex justify-center">
     <div class="justify-center items-center">
-      <div class="text-center mb-4">{{ $t('youAreLoggedIn') }}</div>
+      <div class="text-center v-text mb-4">{{ $t('youAreLoggedIn') }}</div>
       <button class="v-btn-ghost w-full v-btn-sm block" @click="app.signout">{{ $t('logout') }}</button>
       <div class="hidden text-center my-2">{{ $t('or') }}</div>
       <button class="hidden v-btn-ghost w-full v-btn-sm block" @click="app.continueWithLogin">{{ $t('continueWithLogin') }} &rarr;</button>

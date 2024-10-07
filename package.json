@@ -1,7 +1,7 @@
 {
   "name": "@singlebase/singlebase-authui",
   "pkgName": "singlebase-js",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "Singlebase AuthUI",
   "homepage": "https://singlebase.cloud",
   "documentationURL": "https://docs.singlebasecloud.com/sdk/authui",
@@ -50,6 +50,7 @@
     "sass": "^1.79.4",
     "tailwindcss": "^3.4.13",
     "terser": "^5.34.1",
+    "tw-colors": "^3.3.2",
     "typescript": "^5.0.0",
     "vite": "^5.0.0",
     "vue": "^3.5.8",

@@ -56,7 +56,7 @@ async function validateAndContinue() {
             <input class="v-form-input" type="text" v-model="app.$.form.surname">
           </VFormField>
 
-          <p v-if="$settings.mfa" class="text-xs text-gray-600 v-text my-4">{{ $t('otpCodeWillBeSentToEmail') }}</p>
+          <p v-if="$settings.mfa" class="text-xs v-text my-4">{{ $t('otpCodeWillBeSentToEmail') }}</p>
 
           <div>
             <button type="button" :class="[$config.styleRoundButton ? 'v-btn-pill' : '']" class="v-btn-primary w-full my-4 uppercase" @click="validateAndContinue">{{ $t('continue') }}</button>

@@ -3,34 +3,66 @@
 @tailwind utilities;
 
 
+@layer components {
+  /* Background Class */
+  .background {
+    @apply bg-background;
+  }
+
+  /* Text Classes */
+  .text-text-primary {
+    @apply text-primary;
+  }
+
+  .text-text-secondary {
+    @apply text-secondary;
+  }
+
+  .text {
+    @apply text-text;
+  }
+
+  /* Primary Button */
+  .button-primary {
+    @apply bg-button-primary-bg text-button-primary-text transition-colors duration-300 hover:bg-button-primary-hover-bg hover:text-button-primary-hover-text;
+  }
+
+  /* Secondary Button */
+  .button-secondary {
+    @apply bg-button-secondary-bg text-button-secondary-text transition-colors duration-300 hover:bg-button-secondary-hover-bg hover:text-button-secondary-hover-text;
+  }
+}
+
 @layer utilities {
   
   .__input-style { @apply block w-full text-xl rounded-md border-0 py-2 text-slate-800 shadow-sm ring-1 ring-inset ring-slate-300 placeholder:text-slate-400 focus:ring-2 focus:ring-inset focus:ring-slate-500 sm:text-sm sm:leading-6  } 
   .__disabled { @apply disabled:opacity-60 } 
-
-  .v-text {@apply tracking-widest }
+  .__text {@apply tracking-widest }
   
-  .v-heading { @apply text-xl text-slate-700 font-black uppercase tracking-widest}
-  .v-heading-section { @apply text-lg font-light text-slate-700 tracking-widest}
-  .v-heading-title { @apply text-lg font-bold text-slate-700}
-  .v-heading-description { @apply font-light text-sm text-slate-600 tracking-widest}
+  .v-text-primary { @pply __text text-primary }
+  .v-text-secondary { @pply __text text-secondary }
+  .v-text { @apply __text text-text }
 
+  .v-heading { @apply text-xl text-primary font-black uppercase __text }
+  .v-heading-section { @apply text-lg font-light text-secondary __text }
+  .v-heading-title { @apply text-lg font-bold text-secondary __text }
+  .v-heading-description { @apply font-light text-sm text-secondary __text}
 
   /** btn **/
   ._btn_base {@apply rounded-lg  px-3.5 py-2.5 text-sm font-semibold tracking-widest }
-  .v-btn { @apply _btn_base bg-slate-300  text-slate-800 hover:bg-slate-500 hover:text-white}
-  .v-btn-primary {@apply _btn_base  bg-slate-800 text-white hover:bg-slate-900 }
-  .v-btn-ghost { @apply _btn_base bg-slate-50 text-slate-600 hover:bg-slate-200 hover:text-slate-800}
+  .v-btn { @apply _btn_base button-secondary }
+  .v-btn-primary {@apply _btn_base button-primary __text }
+  .v-btn-ghost { @apply _btn_base button-secondary __text }
   .v-btn-pill { @apply rounded-full }
-  .v-btn-sm { @apply text-xs font-light text-slate-600 v-text }
+  .v-btn-sm { @apply text-xs button-secondary __text }
 
   /** v-form-* **/
   .v-form-section { @apply my-4 }
   .v-form-footer {@apply bg-slate-400 p-2 rounded-full}
   .v-form-fieldset {@apply __disabled }
-  .v-form-hint { @apply block text-xs font-light text-slate-600} 
+  .v-form-hint { @apply block text-xs font-light text-secondary} 
   .v-form-description { @apply mt-2 text-sm } 
-  .v-form-label { @apply block text-base font-light text-slate-700 tracking-widest} 
+  .v-form-label { @apply block text-base font-light text-secondary tracking-widest} 
   .v-form-input { @apply __disabled __input-style mt-1 px-2 block w-full  } 
   .v-form-select { @apply __disabled __input-style mt-1 block w-full py-2 px-3 border bg-white rounded-md focus:outline-none  } 
   .v-form-textarea { @apply __disabled __input-style mt-1 block w-full border rounded-md } 

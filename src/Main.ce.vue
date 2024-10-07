@@ -35,8 +35,8 @@ import OtpView from './views/otp.vue';
 import SignupView from './views/signup.vue';
 import LoginSuccessView from './views/login-success.vue';
 import ResetPasswordView from './views/reset-password.vue';
-import AccountInfoView from './views/account-info.vue';
-import UpdateProfileView from './views/update-profile.vue';
+import AccountDetailsView from './views/account-details.vue';
+import EditAccountView from './views/edit-account.vue';
 import ChangeProfilePhotoView from './views/change-profile-photo.vue';
 import ChangeEmailView from './views/change-email.vue';
 import ChangePasswordView from './views/change-password.vue';
@@ -53,11 +53,24 @@ const props = defineProps({
   showSocialLogin: {type: Boolean, default: null},
 })
 
-const VALID_ENTRY_POINTS = ["login", "signup", "lost-password", "update-profile", "account-info", "change-email", "change-password", "change-profile-photo"]
+const VALID_ENTRY_POINTS = ["login", "signup", "lost-password", "edit-account", "account-details", "change-email", "change-password", "change-profile-photo"]
+
+const BACK_BUTTON_SETTINGS = {
+  'login': null,
+  'signup': 'login',
+  'lost-password': 'login',
+  'reset-password': 'login',
+  'account-details': null,
+  'edit-account': 'account-details',
+  'change-email': 'account-details',
+  'change-password': 'account-details',
+  'change-profile-photo': 'account-details'
+}
 
 const $view = computed(() => app.$.view) 
 const $config = computed(() => app.$.config)
 const $t = app.translate
+
 
 /**
  * Translate the current view component under $Locales#__components__
@@ -103,15 +116,7 @@ async function setup() {
 
 function goBack() {
   const _default = 'login'
-  const paths = {
-    'signup': 'login',
-    'account-info': '',
-    'update-profile': 'account-info',
-    'change-email': 'account-info',
-    'change-password': 'account-info',
-    'change-profile-photo': 'account-info'
-  }
-  const path = paths?.[$view.value] ?? _default
+  const path = BACK_BUTTON_SETTINGS?.[$view.value] ?? _default
   app.setView(path)
 }
 
@@ -137,17 +142,18 @@ onMounted(async () => {
   <button class="v-btn-ghost" @click="app.setView('otp')">Otp</button> -
   <button class="v-btn-ghost" @click="app.setView('lost-password')">Lost Password</button> - 
   <button class="v-btn-ghost" @click="app.setView('reset-password')">Reset Password</button> - 
-  <button class="v-btn-ghost" @click="app.setView('account-info')">Account Info</button> - 
+  <button class="v-btn-ghost" @click="app.setView('account-details')">Account Details</button> - 
   <button class="v-btn-ghost" @click="app.setView('change-email')">Change Email</button> - 
   <button class="v-btn-ghost" @click="app.setView('change-password')">Change Password</button> -  
-  <button class="v-btn-ghost" @click="app.setView('update-profile')">Update Profile</button> - 
+  <button class="v-btn-ghost" @click="app.setView('edit-account')">Edit Account</button> - 
   <button class="v-btn-ghost" @click="app.setView('change-profile-photo')">Change Profile Photo</button> - 
 
   <br><br><br><br>
-</div> -->
+</div>  -->
 
  
-  <div class="bg-slate-50 py-2 rounded-lg sm:w-full sm:max-w-xl ">
+<div data-theme="default">
+  <div  class="background p-4 rounded-xl sm:w-full sm:max-w-xl ">
 
     <div v-if="app.$.initialized === 0" class="my-4">
         <VSpinner :text="$t('loading')"/>
@@ -168,7 +174,7 @@ onMounted(async () => {
         <!-- headnav -->
         <fieldset class="v-form-fieldset" :disabled="app.$.loading">
           <div v-if="$view !== 'login-success'" class="flex justify-between ">
-            <div><button v-if="$config.showBackButton && $view !== 'login'"  :class="[$config.styleRoundButton ? '' : '']" class="v-btn-ghost v-btn-sm mb-4" @click="goBack">&larr; {{ $t('back') }}</button></div>
+            <div><button v-if="$config.showBackButton && BACK_BUTTON_SETTINGS?.[$view]"  :class="[$config.styleRoundButton ? '' : '']" class="v-btn-ghost v-btn-sm mb-4" @click="goBack">&larr; {{ $t('back') }}</button></div>
             <div><button v-if="$config.showSignupButton && $view === 'login'"  :class="[$config.styleRoundButton ? '' : '']" class="v-btn-ghost v-btn-sm mb-4" @click="app.setView('signup')">{{ $t('signup')}} &rarr; </button></div>
           </div>
         </fieldset>
@@ -197,8 +203,8 @@ onMounted(async () => {
             <OtpView v-else-if="$view == 'otp'" />
             <LoginSuccessView v-else-if="$view == 'login-success'" />
             <ResetPasswordView v-else-if="$view == 'reset-password'" />
-            <AccountInfoView v-else-if="$view == 'account-info'" />
-            <UpdateProfileView v-else-if="$view == 'update-profile'" />
+            <AccountDetailsView v-else-if="$view == 'account-details'" />
+            <EditAccountView v-else-if="$view == 'edit-account'" />
             <ChangeEmailView v-else-if="$view == 'change-email'" />
             <ChangePasswordView v-else-if="$view == 'change-password'" />
             <ChangeProfilePhotoView v-else-if="$view == 'change-profile-photo'" />
@@ -214,5 +220,6 @@ onMounted(async () => {
     </div>
 
   </div>
+</div>
 
 </template>

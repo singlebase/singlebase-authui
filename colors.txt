@@ -1,0 +1,16 @@
+
+colors: {
+  background: '#0f172a', // slate-900
+  primary: '#e2e8f0', // slate-200
+  secondary: '#94a3b8', // slate-400
+  text: '#94a3b8', // slate-400
+  'button-primary-bg': '#0c4a6e', // sky-900
+  'button-primary-text': '#e2e8f0', // slate-200
+  'button-primary-hover-bg': '#334155', // slate-700
+  'button-primary-hover-text': '#e2e8f0', // slate-200
+
+  'button-secondary-bg': '#1e293b', // slate-800
+  'button-secondary-text': '#64748b', // slate-500
+  'button-secondary-hover-bg': '#1e293b', // slate-800
+  'button-secondary-hover-text': '#cbd5e1', // slate-300
+},

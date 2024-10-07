@@ -68,8 +68,8 @@
         "heading": "Invite Email",
         "subheading": "You've been invited to join. Please check your email for further instructions."
       },
-      "account-info": {
-        "heading": "Account Info",
+      "account-details": {
+        "heading": "Account Details",
         "subheading": "View and manage your account information."
       },
       "change-email": {
@@ -80,9 +80,9 @@
         "heading": "Change Password",
         "subheading": "Update your password."
       },
-      "update-profile": {
-        "heading": "Update Profile",
-        "subheading": "Modify your profile details."
+      "edit-account": {
+        "heading": "Edit Account",
+        "subheading": "Modify your account details."
       },
       "change-profile-photo": {
         "heading": "Change Profile Photo",
@@ -132,6 +132,8 @@
     "toChangeEmailSendOTP": "Para cambiar tu correo electrónico, se enviará un código de acceso único (OTP) a tu correo electrónico para la verificación.",
     "toChangePasswordSendOTP": "Para cambiar tu contraseña, se enviará un código de acceso único (OTP) a tu correo electrónico para la verificación.",
     "currentEmail": "Correo Electrónico Actual",
+    "authenticating": "Autenticando...",
+
     "__components__": {
       "login": {
         "heading": "Iniciar Sesión en la Cuenta",
@@ -157,8 +159,8 @@
         "heading": "Correo de Invitación",
         "subheading": "Has sido invitado a unirte. Por favor, revisa tu correo electrónico para más instrucciones."
       },
-      "account-info": {
-        "heading": "Información de la Cuenta",
+      "account-details": {
+        "heading": "Detalles de la Cuenta",
         "subheading": "Ver y gestionar la información de tu cuenta."
       },
       "change-email": {
@@ -169,9 +171,9 @@
         "heading": "Cambiar Contraseña",
         "subheading": "Actualiza tu contraseña."
       },
-      "update-profile": {
-        "heading": "Actualizar Perfil",
-        "subheading": "Modifica los detalles de tu perfil."
+      "edit-account": {
+        "heading": "Editar Cuenta",
+        "subheading": "Modificar los detalles de tu cuenta."
       },
       "change-profile-photo": {
         "heading": "Cambiar Foto de Perfil",
@@ -221,6 +223,8 @@
     "toChangeEmailSendOTP": "Pour changer votre email, un code d'accès unique (OTP) sera envoyé à votre email pour vérification.",
     "toChangePasswordSendOTP": "Pour changer votre mot de passe, un code d'accès unique (OTP) sera envoyé à votre email pour vérification.",
     "currentEmail": "Email Actuel",
+    "authenticating": "Authentification en cours...",
+
     "__components__": {
       "login": {
         "heading": "Connexion au Compte",
@@ -246,8 +250,8 @@
         "heading": "Email d'Invitation",
         "subheading": "Vous avez été invité à rejoindre. Veuillez vérifier votre email pour plus d'instructions."
       },
-      "account-info": {
-        "heading": "Informations du Compte",
+      "account-details": {
+        "heading": "Détails du Compte",
         "subheading": "Voir et gérer les informations de votre compte."
       },
       "change-email": {
@@ -258,9 +262,9 @@
         "heading": "Changer le Mot de Passe",
         "subheading": "Mettez à jour votre mot de passe."
       },
-      "update-profile": {
-        "heading": "Mettre à Jour le Profil",
-        "subheading": "Modifiez les détails de votre profil."
+      "edit-account": {
+        "heading": "Modifier le Compte",
+        "subheading": "Modifier les détails de votre compte."
       },
       "change-profile-photo": {
         "heading": "Changer la Photo de Profil",
@@ -310,6 +314,8 @@
     "toChangeEmailSendOTP": "Um Ihre E-Mail zu ändern, wird ein einmaliger Zugangscode (OTP) an Ihre E-Mail zur Verifizierung gesendet.",
     "toChangePasswordSendOTP": "Um Ihr Passwort zu ändern, wird ein einmaliger Zugangscode (OTP) an Ihre E-Mail zur Verifizierung gesendet.",
     "currentEmail": "Aktuelle E-Mail",
+    "authenticating": "Authentifiziere...",
+
     "__components__": {
       "login": {
         "heading": "Einloggen ins Konto",
@@ -335,8 +341,8 @@
         "heading": "Einladung E-Mail",
         "subheading": "Sie wurden eingeladen, beizutreten. Bitte überprüfen Sie Ihre E-Mail für weitere Anweisungen."
       },
-      "account-info": {
-        "heading": "Kontoinformationen",
+      "account-details": {
+        "heading": "Kontodetails",
         "subheading": "Sehen Sie sich Ihre Kontoinformationen an und verwalten Sie diese."
       },
       "change-email": {
@@ -347,9 +353,9 @@
         "heading": "Passwort Ändern",
         "subheading": "Aktualisieren Sie Ihr Passwort."
       },
-      "update-profile": {
-        "heading": "Profil Aktualisieren",
-        "subheading": "Ändern Sie die Details Ihres Profils."
+      "edit-account": {
+        "heading": "Konto Bearbeiten",
+        "subheading": "Ändern Sie die Kontodetails."
       },
       "change-profile-photo": {
         "heading": "Profilfoto Ändern",
@@ -399,6 +405,8 @@
     "toChangeEmailSendOTP": "要更改您的电子邮件，将向您的电子邮件发送一次性密码（OTP）以进行验证。",
     "toChangePasswordSendOTP": "要更改您的密码，将向您的电子邮件发送一次性密码（OTP）以进行验证。",
     "currentEmail": "当前电子邮件",
+    "authenticating": "正在验证...",
+
     "__components__": {
       "login": {
         "heading": "登录帐户",
@@ -424,9 +432,9 @@
         "heading": "邀请邮件",
         "subheading": "您被邀请加入。请检查您的电子邮件以获取进一步的说明。"
       },
-      "account-info": {
-        "heading": "帐户信息",
-        "subheading": "查看并管理您的帐户信息。"
+      "account-details": {
+        "heading": "账户详情",
+        "subheading": "查看并管理您的账户信息。"
       },
       "change-email": {
         "heading": "更改电子邮件",
@@ -436,9 +444,9 @@
         "heading": "更改密码",
         "subheading": "更新您的密码。"
       },
-      "update-profile": {
-        "heading": "更新资料",
-        "subheading": "修改您的资料详细信息。"
+      "edit-account": {
+        "heading": "编辑账户",
+        "subheading": "修改您的账户详细信息。"
       },
       "change-profile-photo": {
         "heading": "更改个人资料照片",
@@ -488,6 +496,8 @@
     "toChangeEmailSendOTP": "Чтобы изменить ваш адрес электронной почты, одноразовый пароль (OTP) будет отправлен на ваш электронный адрес для подтверждения.",
     "toChangePasswordSendOTP": "Чтобы изменить ваш пароль, одноразовый пароль (OTP) будет отправлен на ваш электронный адрес для подтверждения.",
     "currentEmail": "Текущий адрес электронной почты",
+    "authenticating": "Аутентификация...",
+
     "__components__": {
       "login": {
         "heading": "Вход в аккаунт",
@@ -513,9 +523,9 @@
         "heading": "Пригласительное письмо",
         "subheading": "Вам пришло приглашение присоединиться. Пожалуйста, проверьте свою электронную почту для получения дальнейших инструкций."
       },
-      "account-info": {
-        "heading": "Информация об аккаунте",
-        "subheading": "Просмотрите и управляйте информацией о своем аккаунте."
+      "account-details": {
+        "heading": "Детали Аккаунта",
+        "subheading": "Просмотр и управление информацией вашего аккаунта."
       },
       "change-email": {
         "heading": "Изменить адрес электронной почты",
@@ -525,9 +535,9 @@
         "heading": "Изменить пароль",
         "subheading": "Обновите свой пароль."
       },
-      "update-profile": {
-        "heading": "Обновить профиль",
-        "subheading": "Измените детали своего профиля."
+      "edit-account": {
+        "heading": "Редактировать Аккаунт",
+        "subheading": "Измените детали своего аккаунта."
       },
       "change-profile-photo": {
         "heading": "Изменить фото профиля",

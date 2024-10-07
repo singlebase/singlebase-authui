@@ -20,9 +20,9 @@ const ERRORS = {
   SETTINGS_ERROR: "Settings Error"
 }
 
-const initError = "SinglebaseAuthUIError: [client].initAuthUI() must be called before accessing the Authentication UI. Visit https://docs.singlebasecloud.com/sdk/javascript"
-const settingsError = "SinglebaseAuthUIError: failed to load settings - [client].initAuthUI() must be called before accessing the Authentication UI. Visit https://docs.singlebasecloud.com/sdk/javascript"
-const configErrorSigninCallback = "SinglebaseAuthUIError: authUIConfig.signinRedirectUrl or authUIConfig.signinCallback is invalid. Visit https://docs.singlebasecloud.com/sdk/javascript"
+const initError = "Singlebase-AuthUIError: [client].initAuthUI() must be called before accessing the Authentication UI. Visit https://docs.singlebasecloud.com/sdk/javascript"
+const settingsError = "Singlebase-AuthUIError: failed to load settings - [client].initAuthUI() must be called before accessing the Authentication UI. Visit https://docs.singlebasecloud.com/sdk/javascript"
+const misConfError = "Singlebase-AuthUIError: authUIConfig.signinRedirectUrl or authUIConfig.onSignIn is invalid. Visit https://docs.singlebasecloud.com/sdk/javascript"
 
 const VIEWS = {
   ERROR: "error",
@@ -35,10 +35,10 @@ const VIEWS = {
   RESET_PASSWORD: "reset-password",
   INVITE_EMAIL: "invite-email",
   EMAIL_UPDATE_ACCOUNT: "invite-email-update-account",
-  ACCOUNT_INFO: "account-info",
+  ACCOUNT_DETAILS: "account-details",
   CHANGE_EMAIL: "change-email",
   CHANGE_PASSWORD: "change-password",
-  UPDATE_PROFILE: "update-profile",
+  EDIT_ACCOUNT: "edit-account",
   CHANGE_PROFILE_PHOTO: "change-profile-photo"
 };
 
@@ -113,12 +113,12 @@ function defaultConfigData() {
     editProfilePhoto: true,
     // @signinRedirectUrl:str - url to redirect after success login, or if the page is entered
     signinRedirectUrl: null,
-    // @signinCallback:Function - a function that will be triggered after success signin
-    signinCallback: null, 
+    // @onSignIn:Function - a function that will be triggered after success signin
+    onSignIn: null, 
     // @signoutRedirectUrl:str - url to redirect after success login, or if the page is entered
     signoutRedirectUrl: null,
-    // @signoutCallback:Function - a function that will be triggered after success signin
-    signoutCallback: null, 
+    // @onSignOut:Function - a function that will be triggered after success signin
+    onSignOut: null, 
     // @lang:str - lang to use when locales is provided
     lang: "en", 
     // @locales:{[lang]: {...}, ...} - Additional lang
@@ -203,12 +203,11 @@ function initialize() {
         xdata.authUIConfig = authUIConfig
         xdata.useFilestore = useFilestore
         const _config = updateConfig(authUIConfig)
-        if (!_config.signinRedirectUrl && !_config.signinCallback) {
-          state.initialized = -1
-          console.error(configErrorSigninCallback)
-        } else {
-          init()
-        }
+        // only warn on misconfiguration
+        if (!_config.signinRedirectUrl && !_config.onSignIn) {
+          console.warn(misConfError)
+        } 
+        init()
       } else {
         state.initialized = -1
         console.error(initError)
@@ -230,13 +229,14 @@ async function init() {
   try {
     state.initialized = 0
     const auth = getAuthClient()
-    console.log("singlebaseauthui: initializing...")
+    console.log("Singlebase:AuthUI: initializing...")
     if (auth) {
+      await auth.initSession()
       if (auth.settings) {
         state.initialized = 1
         loadSettings(auth.settings)
 
-        console.log("singlebaseauthui: ready")
+        console.log("Singlebase:AuthUI: ready")
 
         // callback + change view
         const userData = await auth.getUser()
@@ -248,7 +248,7 @@ async function init() {
         }
 
       } else  {
-        console.log("singlebaseauthui: pending...")
+        console.log("Singlebase:AuthUI: pending...")
         // polling 
         const pollInt = 250
         const pollTimeout = 5000
@@ -257,7 +257,7 @@ async function init() {
             action:() => {
               state.initialized = 1
               loadSettings(auth.settings)
-              console.log("singlebaseauthui: ready")
+              console.log("Singlebase:AuthUI: ready")
               return true
             },
             timeout: pollTimeout,
@@ -272,7 +272,7 @@ async function init() {
             }
           }
         } else {
-          console.log("singlebaseauthui: error")
+          console.log("Singlebase:AuthUI: error")
           state.initialized = -1
           console.error(settingsError)
         }
@@ -444,10 +444,10 @@ async function continueWithLogin() {
 async function signInSuccessCallToAction(userData:{}) {
   if (state.config.signinRedirectUrl) {
     window.location.href = state.config.signinRedirectUrl
-  } else if (state.config.signinCallback) {
-    await state.config?.signinCallback(userData)
+  } else if (state.config.onSignIn) {
+    await state.config?.onSignIn(userData)
   } else {
-    console.error("SinglebaseAuthUIError: Missing #.signinCallback(returnedUserData:object) or #.signinRedirectUrl:str")
+    console.warn(misConfError)
   }
 }
 
@@ -463,6 +463,7 @@ async function signinWithPassword() {
           intent: "signin"
       }
       const resp = await getAuthClient().sendOTP(data)
+      console.log("RESP", resp)
       if (resp.ok) {
         gotoVerifyOTPNextAction(submitSigninWithPassword)
         return true
@@ -727,7 +728,7 @@ async function updateProfile() {
 
     const res = await getAuthClient().updateProfile(data)
     if (res.ok) {
-      setView(VIEWS.ACCOUNT_INFO)
+      setView(VIEWS.ACCOUNT_DETAILS)
       return true;
     } else {
       const _e = res?.error?.description
@@ -792,7 +793,7 @@ async function submitChangeEmail() {
     resetPassword()
     if (res.ok) {
       const user = await getAuthClient().getUser()
-      setView(VIEWS.ACCOUNT_INFO)
+      setView(VIEWS.ACCOUNT_DETAILS)
       await signInSuccessCallToAction(user)
       return true
     } else {
@@ -804,7 +805,7 @@ async function submitChangeEmail() {
       return false 
     }
   } catch {
-    setView(VIEWS.ACCOUNT_INFO)
+    setView(VIEWS.ACCOUNT_DETAILS)
     setErrorMessage(ERRORS.GENERIC)
     return false
   } finally {
@@ -858,7 +859,7 @@ async function submitChangePassword() {
     resetPassword()
     if (res.ok) {
       const user = await getAuthClient().getUser()
-      setView(VIEWS.ACCOUNT_INFO)
+      setView(VIEWS.ACCOUNT_DETAILS)
       await signInSuccessCallToAction(user)
       return true
     } else {
@@ -870,7 +871,7 @@ async function submitChangePassword() {
       return false 
     }
   } catch {
-    setView(VIEWS.ACCOUNT_INFO)
+    setView(VIEWS.ACCOUNT_DETAILS)
     setErrorMessage(ERRORS.GENERIC)
     return false
   } finally {
@@ -900,7 +901,7 @@ async function uploadProfilePhoto(file) {
   } finally {
     setLoading(false)
   }
-  setView(VIEWS.ACCOUNT_INFO)
+  setView(VIEWS.ACCOUNT_DETAILS)
 }
 
 export default {

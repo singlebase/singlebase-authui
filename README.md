@@ -155,7 +155,7 @@ const authUIConfig = {
   theme: "default",
 
   // callback function when login is successful
-  signinCallback: (user) => {
+  onSignIn: (user) => {
     if (user && user?._key) {
       // your code here... 
       // load to state

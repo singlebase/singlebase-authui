@@ -93,7 +93,7 @@ onMounted(() => {
             <div class="mt-2 flex items-center gap-x-3">
               <div class="items-center">
                 <VAvatar v-if="xstate.previewUrl" :src="xstate.previewUrl" class="h-24 w-24" aria-hidden="true"/>
-                <VUserIcon v-else class="h-24 w-24 text-slate-300" aria-hidden="true" />
+                <VUserIcon v-else class="h-24 w-24 v-text" aria-hidden="true" />
               </div>
               <button type="button" @click="selectFile" class="v-btn v-btn-ghost">{{ $t('change') }}</button>
             </div>
