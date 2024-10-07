@@ -22,7 +22,7 @@ const ERRORS = {
 
 const initError = "Singlebase-AuthUIError: [client].initAuthUI() must be called before accessing the Authentication UI. Visit https://docs.singlebasecloud.com/sdk/javascript"
 const settingsError = "Singlebase-AuthUIError: failed to load settings - [client].initAuthUI() must be called before accessing the Authentication UI. Visit https://docs.singlebasecloud.com/sdk/javascript"
-const misConfError = "Singlebase-AuthUIError: authUIConfig.signinRedirectUrl or authUIConfig.onSignIn is invalid. Visit https://docs.singlebasecloud.com/sdk/javascript"
+const misConfError = "Singlebase-AuthUIError: authUIConfig.signInRedirectUrl or authUIConfig.onSignIn is invalid. Visit https://docs.singlebasecloud.com/sdk/javascript"
 
 const VIEWS = {
   ERROR: "error",
@@ -111,8 +111,8 @@ function defaultConfigData() {
     editPhoneNumber: true,
     // @editProfilePhoto - To edit profile photo
     editProfilePhoto: true,
-    // @signinRedirectUrl:str - url to redirect after success login, or if the page is entered
-    signinRedirectUrl: null,
+    // @signInRedirectUrl:str - url to redirect after success login, or if the page is entered
+    signInRedirectUrl: null,
     // @onSignIn:Function - a function that will be triggered after success signin
     onSignIn: null, 
     // @signoutRedirectUrl:str - url to redirect after success login, or if the page is entered
@@ -204,7 +204,7 @@ function initialize() {
         xdata.useFilestore = useFilestore
         const _config = updateConfig(authUIConfig)
         // only warn on misconfiguration
-        if (!_config.signinRedirectUrl && !_config.onSignIn) {
+        if (!_config.signInRedirectUrl && !_config.onSignIn) {
           console.warn(misConfError)
         } 
         init()
@@ -243,7 +243,7 @@ async function init() {
         if (userData) {
           if (NON_AUTH_VIEWS.includes(state.view)) {
             setView(VIEWS.LOGIN_SUCCESS)
-            await signInSuccessCallToAction(userData)
+            await signInCTA(userData)
           }
         }
 
@@ -268,7 +268,7 @@ async function init() {
           if (userData) {
             if (NON_AUTH_VIEWS.includes(state.view)) {
               setView(VIEWS.LOGIN_SUCCESS)
-              await signInSuccessCallToAction(userData)
+              await signInCTA(userData)
             }
           }
         } else {
@@ -383,7 +383,7 @@ function gotoVerifyOTPNextAction(action:Function) {
 /**
  * This will be triggered the CONTINUE
  */
-async function otpCallToAction() {
+async function otpCTA() {
   if (xdata.otpNextAction) {
     xdata.otpNextAction()
   }
@@ -424,9 +424,10 @@ async function requireAuthState() {
 
 async function signout() {
   try {
-    if(getAuthClient()?.isAuthenticated) {
+    if(getAuthClient()?.isAuthenticated()) {
       setLoading(true)
       await getAuthClient()?.signOut()
+      await signOutCTA()
     }
   } catch (e) { } finally {
     setLoading(false)
@@ -437,19 +438,28 @@ async function signout() {
 async function continueWithLogin() {
   const userData = await getAuthClient().getUser()
   if (userData) {
-    await signInSuccessCallToAction(userData)
+    await signInCTA(userData)
   }
 }
 
-async function signInSuccessCallToAction(userData:{}) {
-  if (state.config.signinRedirectUrl) {
-    window.location.href = state.config.signinRedirectUrl
-  } else if (state.config.onSignIn) {
+async function signInCTA(userData:{}) {
+  if (state.config.onSignIn) {
     await state.config?.onSignIn(userData)
-  } else {
-    console.warn(misConfError)
+  }
+  if (state.config.signInRedirectUrl) {
+    window.location.href = state.config.signInRedirectUrl
+  } 
+}
+
+async function signOutCTA() {
+  if (state.config.onSignOut) {
+    await state.config?.onSignOut()
+  }
+  if (state.config.signOutRedirectUrl) {
+    window.location.href = state.config.signOutRedirectUrl
   }
 }
+
 
 // === LOGIN/SIGNIN
 async function signinWithPassword() {
@@ -499,7 +509,7 @@ async function submitSigninWithPassword() {
     if (res.ok) {
       const user = await getAuthClient().getUser()
       setView(VIEWS.LOGIN_SUCCESS)
-      await signInSuccessCallToAction(user)
+      await signInCTA(user)
       return true
     } else {
       const _e = res?.error?.description
@@ -794,7 +804,7 @@ async function submitChangeEmail() {
     if (res.ok) {
       const user = await getAuthClient().getUser()
       setView(VIEWS.ACCOUNT_DETAILS)
-      await signInSuccessCallToAction(user)
+      await signInCTA(user)
       return true
     } else {
       const _e = res?.error?.description
@@ -860,7 +870,7 @@ async function submitChangePassword() {
     if (res.ok) {
       const user = await getAuthClient().getUser()
       setView(VIEWS.ACCOUNT_DETAILS)
-      await signInSuccessCallToAction(user)
+      await signInCTA(user)
       return true
     } else {
       const _e = res?.error?.description
@@ -916,7 +926,7 @@ export default {
   // Actions
   initialize,
   requireAuthState,
-  otpCallToAction,
+  otpCTA,
   signout,
   continueWithLogin,
   signinWithPassword,

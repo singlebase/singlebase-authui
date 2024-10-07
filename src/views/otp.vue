@@ -20,7 +20,7 @@ function validateAndContinue() {
 
   const [validated, errors] = $validator.validate()
   if (validated) {
-    app.otpCallToAction()
+    app.otpCTA()
   } else {
     console.log("Error", validated, errors)
   }

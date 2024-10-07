@@ -6,5 +6,5 @@ const props = defineProps({
 </script>
 
 <template>
-    <img v-if="props?.src" class="inline-block rounded-full" :src="props?.src" alt="" />
+    <img v-if="props?.src" class="inline-block rounded-full ring-2 ring-secondary p-1" :src="props?.src" :alt="props?.alt" />
 </template>
