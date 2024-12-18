@@ -35,7 +35,7 @@
 
 @layer utilities {
   
-  .__input-style { @apply block w-full text-xl rounded-md border-0 py-2 text-slate-800 shadow-sm ring-1 ring-inset ring-slate-300 placeholder:text-slate-400 focus:ring-2 focus:ring-inset focus:ring-slate-500 sm:text-sm sm:leading-6  } 
+  .__input-style { @apply block rounded-xl w-full text-sm border-2 py-2 font-bold text-slate-900 placeholder:text-slate-400 focus:ring-2 focus:ring-inset focus:ring-slate-400 sm:text-sm sm:leading-6  } 
   .__disabled { @apply disabled:opacity-60 } 
   .__text {@apply tracking-widest }
   
@@ -44,6 +44,7 @@
   .v-text { @apply __text text-text }
 
   .v-heading { @apply text-xl text-primary font-black uppercase __text }
+  .v-subheading { @apply text-xs font-bold text-secondary uppercase __text }
   .v-heading-section { @apply text-lg font-light text-secondary __text }
   .v-heading-title { @apply text-lg font-bold text-secondary __text }
   .v-heading-description { @apply font-light text-sm text-secondary __text}
@@ -55,8 +56,11 @@
   .v-btn-ghost { @apply _btn_base button-secondary __text }
   .v-btn-pill { @apply rounded-full }
   .v-btn-sm { @apply text-xs button-secondary __text }
+  .v-btn-link {@apply __text font-light tracking-widest underline decoration-dashed underline-offset-4}
+  .v-btn-xs {@apply text-xs }
 
   /** v-form-* **/
+  .v-form-style-pill {@apply rounded-full }
   .v-form-section { @apply my-4 }
   .v-form-footer {@apply bg-slate-400 p-2 rounded-full}
   .v-form-fieldset {@apply __disabled }

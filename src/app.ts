@@ -1,14 +1,20 @@
 /**
  * app.ts
  * Application Controller
- * 
- * 
  */
 
 import { reactive } from 'vue'
 import { waitUntil, merge, isPlainObject, getNestedProperty, isEmpty } from './lib'
 import { generatePasswordPolicyHint } from './lib/vvalidator'
 import LOCALES from './locales.json'
+
+/**
+ * Get the package info
+ */
+import packageJson from '../package.json' assert { type: 'json' };
+const PKG_VERSION = packageJson.version;
+const PKG_NAME = packageJson.pkgName
+
 
 const ERRORS = {
   GENERIC: 'Unable to continue. Please try again later.',
@@ -20,9 +26,9 @@ const ERRORS = {
   SETTINGS_ERROR: "Settings Error"
 }
 
-const initError = "Singlebase-AuthUIError: [client].initAuthUI() must be called before accessing the Authentication UI. Visit https://docs.singlebasecloud.com/sdk/javascript"
-const settingsError = "Singlebase-AuthUIError: failed to load settings - [client].initAuthUI() must be called before accessing the Authentication UI. Visit https://docs.singlebasecloud.com/sdk/javascript"
-const misConfError = "Singlebase-AuthUIError: authUIConfig.signInRedirectUrl or authUIConfig.onSignIn is invalid. Visit https://docs.singlebasecloud.com/sdk/javascript"
+const initError = "SinglebaseAuthUI:Error - [client].initAuthUI() must be called before accessing the Authentication UI. Visit https://docs.singlebasecloud.com/sdk/javascript"
+const settingsError = "SinglebaseAuthUI:Error - failed to load settings - [client].initAuthUI() must be called before accessing the Authentication UI. Visit https://docs.singlebasecloud.com/sdk/javascript"
+const misConfError = "SinglebaseAuthUI:Error - authUIConfig.onAuthStateChange is invalid. Visit https://docs.singlebasecloud.com/sdk/javascript"
 
 const VIEWS = {
   ERROR: "error",
@@ -35,17 +41,19 @@ const VIEWS = {
   RESET_PASSWORD: "reset-password",
   INVITE_EMAIL: "invite-email",
   EMAIL_UPDATE_ACCOUNT: "invite-email-update-account",
-  ACCOUNT_DETAILS: "account-details",
+  ACCOUNT: "account",
   CHANGE_EMAIL: "change-email",
   CHANGE_PASSWORD: "change-password",
   EDIT_ACCOUNT: "edit-account",
   CHANGE_PROFILE_PHOTO: "change-profile-photo"
 };
 
-const NON_AUTH_VIEWS = [VIEWS.LOGIN, VIEWS.SIGNUP, VIEWS.LOST_PASSWORD]
+const LOGIN_VIEW = VIEWS.LOGIN
+const UNAUTH_VIEWS = [VIEWS.LOGIN, VIEWS.SIGNUP, VIEWS.LOST_PASSWORD]
+const AUTH_VIEWS = [VIEWS.ACCOUNT, VIEWS.CHANGE_EMAIL, VIEWS.CHANGE_PASSWORD, VIEWS.CHANGE_PROFILE_PHOTO]
 
 /** 
- * Settings
+ * Settings schema
     "data": {
         "enabled": true,
         "enable_email_provider": true,
@@ -96,8 +104,6 @@ function defaultConfigData() {
     // @styleRoundButton:bool - to make button round or square
     styleRoundButton: true,
     // @
-    showBackButton: true,
-    // @
     showSignupButton: true, 
     // @
     showForgotPasswordButton: true,
@@ -105,20 +111,24 @@ function defaultConfigData() {
     showSocialLogin: false,
     // @showPasswordHint:bool - show the password hint based on the settings password policy
     showPasswordHint: false,
+    // @hideLoginSuccessView:bool - If a view is not provided and it shows instead the login-sucees, it will hide it
+    hideLoginSuccessView: false,
     // @editFullName:bool - To edit name and surname, in signup and update-profile
     editFullName: true,
     // @editProfilePhoneNumber - To edit phone number
     editPhoneNumber: true,
     // @editProfilePhoto - To edit profile photo
     editProfilePhoto: true,
-    // @signInRedirectUrl:str - url to redirect after success login, or if the page is entered
-    signInRedirectUrl: null,
-    // @onSignIn:Function - a function that will be triggered after success signin
-    onSignIn: null, 
-    // @signoutRedirectUrl:str - url to redirect after success login, or if the page is entered
-    signoutRedirectUrl: null,
-    // @onSignOut:Function - a function that will be triggered after success signin
-    onSignOut: null, 
+
+    // @onAuthStateChange:Function - fires when the authentication status changes: login, logout, token refresh
+    onAuthStateChange: null,
+    // @onAuthError:Function - fires when the authentication status changes: login, logout, token refresh
+    onAuthError: null,
+    // @onUserUpdate:Function - Handles profile/account updates:
+    onUserUpdate: null,
+    // @onUIViewChange:Function - a function that will be triggered when changing to a different UI Vuew
+    onUIViewChange: null, 
+
     // @lang:str - lang to use when locales is provided
     lang: "en", 
     // @locales:{[lang]: {...}, ...} - Additional lang
@@ -161,9 +171,12 @@ const state = reactive({
   loading: false,
   // @loadingText:str - the text message to show
   loadingText: 'loading...',
+
   error: null,
   // @view:string -  the current view
   view: null,
+  // @postLoginView:str - a view to logi
+  postLoginView: null,
 
   // ----------------------------------------
   // @form:object
@@ -194,6 +207,9 @@ const state = reactive({
 
 function initialize() {
   try {
+    const _pkgNameVersion = `${PKG_NAME}@${PKG_VERSION}`
+    console.log(_pkgNameVersion)
+
     const sym = Symbol.for("singlebaseui");
     const xSym = window?.[sym]
     if (xSym) {
@@ -204,7 +220,7 @@ function initialize() {
         xdata.useFilestore = useFilestore
         const _config = updateConfig(authUIConfig)
         // only warn on misconfiguration
-        if (!_config.signInRedirectUrl && !_config.onSignIn) {
+        if (!_config?.onAuthStateChange) {
           console.warn(misConfError)
         } 
         init()
@@ -227,28 +243,32 @@ function initialize() {
  */
 async function init() {
   try {
+
     state.initialized = 0
     const auth = getAuthClient()
-    console.log("Singlebase:AuthUI: initializing...")
+
+    console.log("SinglebaseAuthUI: initializing...")
     if (auth) {
       await auth.initSession()
       if (auth.settings) {
         state.initialized = 1
         loadSettings(auth.settings)
 
-        console.log("Singlebase:AuthUI: ready")
+        console.log("SinglebaseAuthUI: ready")
 
         // callback + change view
         const userData = await auth.getUser()
         if (userData) {
-          if (NON_AUTH_VIEWS.includes(state.view)) {
-            setView(VIEWS.LOGIN_SUCCESS)
-            await signInCTA(userData)
+          if (UNAUTH_VIEWS.includes(state.view)) {
+            setView(state?.postLoginView || VIEWS.LOGIN_SUCCESS)
+            if (state?.postLoginView) {
+              resetPostLoginView()
+            }
+            await onAuthStateChange(userData)
           }
         }
-
       } else  {
-        console.log("Singlebase:AuthUI: pending...")
+        console.log("SinglebaseAuthUI: pending...")
         // polling 
         const pollInt = 250
         const pollTimeout = 5000
@@ -257,7 +277,7 @@ async function init() {
             action:() => {
               state.initialized = 1
               loadSettings(auth.settings)
-              console.log("Singlebase:AuthUI: ready")
+              console.log("SinglebaseAuthUI: ready")
               return true
             },
             timeout: pollTimeout,
@@ -266,15 +286,17 @@ async function init() {
           // callback + change view
           const userData = await auth.getUser()
           if (userData) {
-            if (NON_AUTH_VIEWS.includes(state.view)) {
-              setView(VIEWS.LOGIN_SUCCESS)
-              await signInCTA(userData)
+            if (UNAUTH_VIEWS.includes(state.view)) {
+              setView(state?.postLoginView || VIEWS.LOGIN_SUCCESS)
+              if (state?.postLoginView) {
+                resetPostLoginView()
+              }
+              await onAuthStateChange(userData)
             }
           }
         } else {
-          console.log("Singlebase:AuthUI: error")
           state.initialized = -1
-          console.error(settingsError)
+          console.error("SinglebaseAuthUI: error", settingsError)
         }
       }
     } else {
@@ -283,7 +305,7 @@ async function init() {
     } 
   } catch (e) {
     state.initialized = -1;
-    console.error(initError)
+    console.error(initError, e)
   }
 }
 
@@ -316,13 +338,46 @@ function updateConfig(config:object) {
   return state.config
 }
 
-function setLoading(loading=true) {
-  state.loading = loading
+/**
+"loading": "loading...",
+"loadingLogin": "authenticating...",
+"loadingAuthenticate": "authenticating...",
+"loadingSignout": "signing out...",
+"loadingUpdate": "updating...",
+ */
+const LOADING = {
+  LOADING: "loading",
+  AUTHENTICATE: "loadingAuthenticate",
+  LOGIN: "loadingLogin",
+  SIGNOUT: "loadingSignout",
+  UPDATE: "loadingUpdate"
 }
+
+function setLoading(loading=true, type=LOADING.LOADING) {
+  state.loading = loading
+  if (type) {
+    state.loadingText = translate(type)
+  }
+  if (loading === false) {
+    state.loadingText = translate(LOADING.LOADING)
+  }
+}
+
 
 function setView(view:string) {
   state.view = view
   setErrorMessage(null)
+  if (state.config?.onUIViewChange) {
+    state.config?.onUIViewChange(view)
+  }
+}
+
+function setPostLoginView(view:string) {
+  state.postLoginView = view
+}
+
+function resetPostLoginView() {
+  state.postLoginView = null
 }
 
 function setErrorMessage(error:string|null=null) {
@@ -356,11 +411,28 @@ function requiredFields(obj, fields) {
 }
 
 function translate(path) {
-  return getNestedProperty(state?.locales?.[state?.lang], path)
+  return getNestedProperty(state?.locales?.[state?.lang], path || '')
+}
+
+
+function getLoadingMessage() {
+
 }
 
 //-----------------------------------------------------------------------------
 // ACTIONS 
+
+async function onAuthStateChange(userData:{}) {
+  if (state.config.onAuthStateChange) {
+    await state.config?.onAuthStateChange(userData)
+  } 
+}
+
+async function onUserUpdate(userData:{}) {
+  if (state.config.onUserUpdate) {
+    await state.config?.onUserUpdate(userData)
+  } 
+}
 
 /**
  * Return the auth client
@@ -407,7 +479,7 @@ async function loadAuthState() {
  * @returns 
  */
 async function requireAuthState() {
-  setLoading(true)
+  setLoading(true, LOADING.AUTHENTICATE)
   if (!await getAuthClient()?.getUser()) {
     setView(VIEWS.UNAUTHORIZED)
     setLoading(false)
@@ -422,12 +494,16 @@ async function requireAuthState() {
   }
 }
 
+async function isAuthenticated() {
+  return getAuthClient()?.isAuthenticated()
+}
+
 async function signout() {
   try {
-    if(getAuthClient()?.isAuthenticated()) {
-      setLoading(true)
+    if(await isAuthenticated()) {
+      setLoading(true, LOADING.SIGNOUT)
       await getAuthClient()?.signOut()
-      await signOutCTA()
+      await onAuthStateChange(null)
     }
   } catch (e) { } finally {
     setLoading(false)
@@ -438,25 +514,7 @@ async function signout() {
 async function continueWithLogin() {
   const userData = await getAuthClient().getUser()
   if (userData) {
-    await signInCTA(userData)
-  }
-}
-
-async function signInCTA(userData:{}) {
-  if (state.config.onSignIn) {
-    await state.config?.onSignIn(userData)
-  }
-  if (state.config.signInRedirectUrl) {
-    window.location.href = state.config.signInRedirectUrl
-  } 
-}
-
-async function signOutCTA() {
-  if (state.config.onSignOut) {
-    await state.config?.onSignOut()
-  }
-  if (state.config.signOutRedirectUrl) {
-    window.location.href = state.config.signOutRedirectUrl
+    await onAuthStateChange(userData)
   }
 }
 
@@ -465,7 +523,7 @@ async function signOutCTA() {
 async function signinWithPassword() {
   try {
     setErrorMessage(null)
-    setLoading(true)
+    setLoading(true, LOADING.AUTHENTICATE)
 
     if (state?.settings?.mfa) {
       const data = {
@@ -473,7 +531,6 @@ async function signinWithPassword() {
           intent: "signin"
       }
       const resp = await getAuthClient().sendOTP(data)
-      console.log("RESP", resp)
       if (resp.ok) {
         gotoVerifyOTPNextAction(submitSigninWithPassword)
         return true
@@ -482,7 +539,7 @@ async function signinWithPassword() {
         resetPassword()
       }
     } else {
-      return submitSigninWithPassword()
+      return await submitSigninWithPassword()
     }
   } catch (e) {
     setErrorMessage(ERRORS.GENERIC)
@@ -495,7 +552,7 @@ async function signinWithPassword() {
 async function submitSigninWithPassword() {
   try {
     setErrorMessage(null)
-    setLoading(true)
+    setLoading(true, LOADING.AUTHENTICATE)
     const data = {
       email: state.form.email, 
       password: state.form.password
@@ -503,17 +560,20 @@ async function submitSigninWithPassword() {
     if (state?.settings?.mfa) {
       data.otp = state.form.otp
     }
-    
+
     const res = await getAuthClient().signInWithPassword(data)
     resetPassword()
     if (res.ok) {
       const user = await getAuthClient().getUser()
-      setView(VIEWS.LOGIN_SUCCESS)
-      await signInCTA(user)
+      setView(state?.postLoginView || VIEWS.LOGIN_SUCCESS)
+      if (state?.postLoginView) {
+        resetPostLoginView()
+      }
+      await onAuthStateChange(user)
       return true
     } else {
       const _e = res?.error?.description
-      console.log("Error", _e)
+      console.error("SinglebaseAuthUI:Error", _e)
       const errorMessage = _e in ERRORS ? ERRORS[_e] : LOGIN_ERROR
       setView(VIEWS.LOGIN)
       setErrorMessage(errorMessage)
@@ -540,26 +600,30 @@ async function submitSigninWithPassword() {
 async function signupWithPassword() {
   try {
     setErrorMessage(null)
-    setLoading(true)
+    setLoading(true, LOADING.AUTHENTICATE)
 
-    // MFA enabled
-    if (state?.settings?.mfa) {
-      if (await submitSignupWithPassword()) {
+    if (await submitSignupWithPassword()) {
+      // MFA
+      if (state?.settings?.mfa) {
         const otp_resp = await getAuthClient().sendOTP({
-          email: state.form.email, 
+          email: _email, 
           intent: "signin"
         })
         if (otp_resp.ok) {
           gotoVerifyOTPNextAction(submitSigninWithPassword)
           return true
         } 
-      } else {
-        setErrorMessage(ERRORS.GENERIC)
-        return false 
+      } 
+      // Auto login
+      else {
+        await submitSigninWithPassword()
       }
     } else {
-      return await submitSignupWithPassword()
+      setErrorMessage(ERRORS.GENERIC)
+      resetPassword()
+      return false 
     }
+
   } catch (e) {
     setErrorMessage(ERRORS.GENERIC)
     resetPassword()
@@ -572,7 +636,7 @@ async function signupWithPassword() {
 async function submitSignupWithPassword() {
   try {
     setErrorMessage(null)
-    setLoading(true)
+    setLoading(true, LOADING.AUTHENTICATE)
 
     const creds = {
       email: state.form.email,
@@ -585,9 +649,9 @@ async function submitSignupWithPassword() {
     if (res.ok) {
       return true;
     } else {
+      resetPassword()
       const _e = res?.error?.description
       const errorMessage = ERRORS?.[_e] ?? ERRORS.INVALID_EMAIL_SIGNUP
-      resetPassword()
       setView(VIEWS.SIGNUP)
       setErrorMessage(errorMessage)
       return false
@@ -605,7 +669,7 @@ async function submitSignupWithPassword() {
 async function submitLostPassword() {
   try {
     setErrorMessage(null)
-    setLoading(true)
+    setLoading(true, LOADING.AUTHENTICATE)
   
     const resp = await getAuthClient().sendOTP({
         email: state.form.email, 
@@ -630,7 +694,7 @@ async function submitLostPassword() {
 async function submitResetPassword() {
   try {
     setErrorMessage(null)
-    setLoading(true)
+    setLoading(true, LOADING.UPDATE)
 
     // check fields
     requiredFields(state.form, ['email', 'otp', 'password'])
@@ -645,6 +709,8 @@ async function submitResetPassword() {
       // return to login 
       resetPassword()
       setView(VIEWS.LOGIN)
+      const user = await getAuthClient().getUser()
+      await onUserUpdate(user)
       return true 
     } else {
       setErrorMessage(ERRORS.GENERIC)
@@ -663,7 +729,7 @@ async function submitResetPassword() {
 async function submitInviteEmail() {
   try {
     setErrorMessage(null)
-    setLoading(true)
+    setLoading(true, LOADING.UPDATE)
     const resp = await getAuthClient().sendOTP({
         email: state.form.email, 
         intent: "invite"
@@ -688,7 +754,7 @@ async function submitInviteEmail() {
 async function submitInviteEmailUpdateAccount() {
   try {
     setErrorMessage(null)
-    setLoading(true)
+    setLoading(true, LOADING.LOADING)
 
     const creds = {
       email: state.form.email,
@@ -717,11 +783,12 @@ async function submitInviteEmailUpdateAccount() {
   }
 }
 
+
 // === UPDATE PROFILE
 async function updateProfile() {
   try {
     setErrorMessage(null)
-    setLoading(true)
+    setLoading(true, LOADING.UPDATE)
 
     const data = {
       display_name: state.form.display_name,
@@ -738,7 +805,9 @@ async function updateProfile() {
 
     const res = await getAuthClient().updateProfile(data)
     if (res.ok) {
-      setView(VIEWS.ACCOUNT_DETAILS)
+      const user = await getAuthClient().getUser()
+      setView(VIEWS.ACCOUNT)
+      await onUserUpdate(user)
       return true;
     } else {
       const _e = res?.error?.description
@@ -761,7 +830,7 @@ async function updateProfile() {
 async function changeEmail() {
   try {
     setErrorMessage(null)
-    setLoading(true)
+    setLoading(true, LOADING.UPDATE)
 
     if (state?.settings?.mfa) {
       const data = {
@@ -790,7 +859,7 @@ async function changeEmail() {
 async function submitChangeEmail() {
   try {
     setErrorMessage(null)
-    setLoading(true)
+    setLoading(true, LOADING.UPDATE)
     const data = {
       email: state.form.email,
       new_email: state.form.new_email,
@@ -803,19 +872,19 @@ async function submitChangeEmail() {
     resetPassword()
     if (res.ok) {
       const user = await getAuthClient().getUser()
-      setView(VIEWS.ACCOUNT_DETAILS)
-      await signInCTA(user)
+      setView(VIEWS.ACCOUNT)
+      await onUserUpdate(user)
       return true
     } else {
       const _e = res?.error?.description
-      console.log("Error", _e)
+      console.error("SinglebaseAuthUI:Error", _e)
       const errorMessage = _e in ERRORS ? ERRORS[_e] : ERRORS.GENERIC
       setView(VIEWS.ERROR)
       setErrorMessage(errorMessage)
       return false 
     }
   } catch {
-    setView(VIEWS.ACCOUNT_DETAILS)
+    setView(VIEWS.ACCOUNT)
     setErrorMessage(ERRORS.GENERIC)
     return false
   } finally {
@@ -827,7 +896,7 @@ async function submitChangeEmail() {
 async function changePassword() {
   try {
     setErrorMessage(null)
-    setLoading(true)
+    setLoading(true, LOADING.UPDATE)
 
     if (state?.settings?.mfa) {
       const data = {
@@ -856,7 +925,7 @@ async function changePassword() {
 async function submitChangePassword() {
   try {
     setErrorMessage(null)
-    setLoading(true)
+    setLoading(true, LOADING.UPDATE)
     const data = {
       email: state.form.email,
       new_password: state.form.password,
@@ -869,19 +938,19 @@ async function submitChangePassword() {
     resetPassword()
     if (res.ok) {
       const user = await getAuthClient().getUser()
-      setView(VIEWS.ACCOUNT_DETAILS)
-      await signInCTA(user)
+      setView(VIEWS.ACCOUNT)
+      await onUserUpdate(user)
       return true
     } else {
       const _e = res?.error?.description
-      console.log("Error", _e)
+      console.error("SinglebaseAuthUI:Error", _e)
       const errorMessage = _e in ERRORS ? ERRORS[_e] : ERRORS.GENERIC
       setView(VIEWS.ERROR)
       setErrorMessage(errorMessage)
       return false 
     }
   } catch {
-    setView(VIEWS.ACCOUNT_DETAILS)
+    setView(VIEWS.ACCOUNT)
     setErrorMessage(ERRORS.GENERIC)
     return false
   } finally {
@@ -892,7 +961,7 @@ async function submitChangePassword() {
 // === UPLOAD PHOTO
 async function uploadProfilePhoto(file) {
   setErrorMessage(null)
-  setLoading(true)
+  setLoading(true, LOADING.UPDATE)
   try {
     const filestore = xdata.useFilestore()
     const opts = {
@@ -905,26 +974,39 @@ async function uploadProfilePhoto(file) {
     if (res.ok) {
       state.form.photo_url = res?.data?.url
       await getAuthClient().refreshSession()
+      const user = await getAuthClient().getUser()
+      await onUserUpdate(user)
     }
   } catch (e) {
     console.error(e)
   } finally {
     setLoading(false)
   }
-  setView(VIEWS.ACCOUNT_DETAILS)
+  setView(VIEWS.ACCOUNT)
 }
 
 export default {
+  PKG_NAME,
+  PKG_VERSION,
+
   $: state, // shortcut 
   state,
   setView,
   clearForm,
   updateConfig,
   translate,
+  setPostLoginView,
+
+  //
+  VIEWS,
+  LOGIN_VIEW,
+  UNAUTH_VIEWS,
+  AUTH_VIEWS,
 
   // --- // --- // ---
   // Actions
   initialize,
+  isAuthenticated,
   requireAuthState,
   otpCTA,
   signout,
@@ -940,4 +1022,6 @@ export default {
   submitSignupWithPassword,
   submitLostPassword,
   submitResetPassword,
+
+
 }

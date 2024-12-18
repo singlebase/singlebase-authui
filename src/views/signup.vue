@@ -40,21 +40,23 @@ async function validateAndContinue() {
   <div singlebase-auth-ui-signup-view>
     <form @submit.prevent="validateAndContinue">
       <div>
-          <VFormField :label="$t('email')" :error="$validator?.get('email')">
+          <VFormField :label="$t('email')" required :error="$validator?.get('email')">
             <input class="v-form-input" type="text" v-model="app.$.form.email">
           </VFormField>
 
-          <VFormField :label="$t('password')" :hint="$config.showPasswordHint ? $settings?.passwordHint : null" :error="$validator?.get('password')">
+          <VFormField :label="$t('password')" required  :hint="$config.showPasswordHint ? $settings?.passwordHint : null" :error="$validator?.get('password')">
             <input class="v-form-input" type="password" v-model="app.$.form.password">
           </VFormField>
 
-          <VFormField :label="$t('firstName')" :error="$validator?.get('display_name')">
-            <input class="v-form-input" type="text" v-model="app.$.form.display_name">
-          </VFormField>
+          <div class="grid grid-cols-1 sm:grid-cols-2 sm:gap-4">
+            <VFormField :label="$t('firstName')" required  :error="$validator?.get('display_name')">
+              <input class="v-form-input" type="text" v-model="app.$.form.display_name">
+            </VFormField>
 
-          <VFormField :label="$t('lastName')" :error="$validator?.get('surname')">
-            <input class="v-form-input" type="text" v-model="app.$.form.surname">
-          </VFormField>
+            <VFormField :label="$t('lastName')" :error="$validator?.get('surname')">
+              <input class="v-form-input" type="text" v-model="app.$.form.surname">
+            </VFormField>
+          </div>
 
           <p v-if="$settings.mfa" class="text-xs v-text my-4">{{ $t('otpCodeWillBeSentToEmail') }}</p>
 
@@ -67,4 +69,4 @@ async function validateAndContinue() {
     <VSocialLogin  v-if="$config.showSocialLogin" :prefix="$t('signupWith')"/>
 
   </div>
-</template>../app-01
+</template>

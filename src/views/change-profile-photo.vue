@@ -100,8 +100,8 @@ onMounted(() => {
           </VFormField>
 
           <div v-if="xstate.ready" class="text-orange-700 animate-bounce v-text my-4">{{ $t('profilePhotoNotUploadedYet') }}</div>
-          <div>
-            <button type="button" :class="[$config.styleRoundButton ? 'v-btn-pill' : '']" class="v-btn-primary w-full my-4 uppercase" @click="validateAndContinue">{{ $t('continue') }}</button>
+          <div v-if="xstate.ready">
+            <button disabled type="button" :class="[$config.styleRoundButton ? 'v-btn-pill' : '']" class="v-btn-primary w-full my-4 uppercase" @click="validateAndContinue">{{ $t('continue') }}</button>
           </div>
       </div>
     </form>

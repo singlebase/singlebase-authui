@@ -2,7 +2,6 @@ import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import replace from '@rollup/plugin-replace';
 import { terser } from "rollup-plugin-terser";
-
 import pkg from "./package.json";
 
 const banner = `
@@ -33,7 +32,7 @@ export default defineConfig({
     vue({customElement: true}),
   ],
   define: {
-    'process.env': {}
+    'process.env': {},
   },
   build: {
     sourcemap: true,
@@ -57,7 +56,24 @@ export default defineConfig({
           values: {
             '__VERSION__': pkg.version
           }
-        })
+        }),
+        {
+          name: 'remove-dev-code',
+          transform(code, id) {
+            if (id.includes('.vue') || id.includes('.js') || id.includes('.ts')) {
+              // Remove code between DEV_ONLY_CODE_START and DEV_ONLY_CODE_END tags
+              // This handles both JS-style comments and HTML comments
+              return {
+                code: code
+                  // Remove HTML comments with development code
+                  .replace(/<!--\s*DEV_ONLY_CODE_START\s*-->[\s\S]*?<!--\s*DEV_ONLY_CODE_END\s*-->/g, '')
+                  // Remove JS comments with development code
+                  .replace(/\/\*\s*DEV_ONLY_CODE_START\s*\*\/[\s\S]*?\/\*\s*DEV_ONLY_CODE_END\s*\*\//g, ''),
+                map: null
+              };
+            }
+          }
+        }       
       ]
     }
   }

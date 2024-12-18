@@ -24,7 +24,6 @@
     "reEnterPassword": "Re-enter Password",
     "invalidEntryPoint": "Invalid entry point",
     "errorInitializationFailed": "Error Loading AuthUI",
-    "loading": "loading",
     "signupWith": "Signup With",
     "loginWith": "Login With",
     "profilePhoto": "Profile Photo",
@@ -41,15 +40,21 @@
     "toChangeEmailSendOTP": "To change your email, a one time passcode (OTP) will be sent to your email for verification.",
     "toChangePasswordSendOTP": "To change your password, a one time passcode (OTP) will be sent to your email for verification.",
     "currentEmail": "Current Email",
-    "authenticating": "Authenticating...",
+    "dontHaveAnAccount": "Don't have an account?",
+    "haveAnAccount": "Have an account?",
+    "loading": "loading...",
+    "loadingLogin": "authenticating...",
+    "loadingAuthenticate": "authenticating...",
+    "loadingSignout": "signing out...",
+    "loadingUpdate": "updating...",
  
     "__components__": {
       "login": {
-        "heading": "Login to account",
+        "heading": "Login",
         "subheading": "Please enter your email and password to access your account."
       },
       "signup": {
-        "heading": "Signup",
+        "heading": "Create Account",
         "subheading": "Create a new account by filling in your details below."
       },
       "otp": {
@@ -68,7 +73,7 @@
         "heading": "Invite Email",
         "subheading": "You've been invited to join. Please check your email for further instructions."
       },
-      "account-details": {
+      "account": {
         "heading": "Account Details",
         "subheading": "View and manage your account information."
       },
@@ -133,6 +138,10 @@
     "toChangePasswordSendOTP": "Para cambiar tu contraseña, se enviará un código de acceso único (OTP) a tu correo electrónico para la verificación.",
     "currentEmail": "Correo Electrónico Actual",
     "authenticating": "Autenticando...",
+    "loadingUpdate": "actualizando...",
+    "loadingLogin": "autenticando...",
+    "loadingAuthenticate": "autenticando...",
+    "loadingSignout": "cerrando sesión...",
 
     "__components__": {
       "login": {
@@ -159,7 +168,7 @@
         "heading": "Correo de Invitación",
         "subheading": "Has sido invitado a unirte. Por favor, revisa tu correo electrónico para más instrucciones."
       },
-      "account-details": {
+      "account": {
         "heading": "Detalles de la Cuenta",
         "subheading": "Ver y gestionar la información de tu cuenta."
       },
@@ -224,6 +233,10 @@
     "toChangePasswordSendOTP": "Pour changer votre mot de passe, un code d'accès unique (OTP) sera envoyé à votre email pour vérification.",
     "currentEmail": "Email Actuel",
     "authenticating": "Authentification en cours...",
+    "loadingUpdate": "mise à jour...",
+    "loadingLogin": "authentification...",
+    "loadingAuthenticate": "authentification...",
+    "loadingSignout": "déconnexion...",
 
     "__components__": {
       "login": {
@@ -250,7 +263,7 @@
         "heading": "Email d'Invitation",
         "subheading": "Vous avez été invité à rejoindre. Veuillez vérifier votre email pour plus d'instructions."
       },
-      "account-details": {
+      "account": {
         "heading": "Détails du Compte",
         "subheading": "Voir et gérer les informations de votre compte."
       },
@@ -314,7 +327,11 @@
     "toChangeEmailSendOTP": "Um Ihre E-Mail zu ändern, wird ein einmaliger Zugangscode (OTP) an Ihre E-Mail zur Verifizierung gesendet.",
     "toChangePasswordSendOTP": "Um Ihr Passwort zu ändern, wird ein einmaliger Zugangscode (OTP) an Ihre E-Mail zur Verifizierung gesendet.",
     "currentEmail": "Aktuelle E-Mail",
-    "authenticating": "Authentifiziere...",
+    "authenticating": "authentifizieren...",
+    "loadingUpdate": "aktualisieren...",
+    "loadingLogin": "authentifizieren...",
+    "loadingAuthenticate": "authentifizieren...",
+    "loadingSignout": "abmelden...",
 
     "__components__": {
       "login": {
@@ -341,7 +358,7 @@
         "heading": "Einladung E-Mail",
         "subheading": "Sie wurden eingeladen, beizutreten. Bitte überprüfen Sie Ihre E-Mail für weitere Anweisungen."
       },
-      "account-details": {
+      "account": {
         "heading": "Kontodetails",
         "subheading": "Sehen Sie sich Ihre Kontoinformationen an und verwalten Sie diese."
       },
@@ -406,6 +423,10 @@
     "toChangePasswordSendOTP": "要更改您的密码，将向您的电子邮件发送一次性密码（OTP）以进行验证。",
     "currentEmail": "当前电子邮件",
     "authenticating": "正在验证...",
+    "loadingUpdate": "更新中...",
+    "loadingLogin": "正在验证...",
+    "loadingAuthenticate": "正在验证...",
+    "loadingSignout": "正在注销...",
 
     "__components__": {
       "login": {
@@ -432,7 +453,7 @@
         "heading": "邀请邮件",
         "subheading": "您被邀请加入。请检查您的电子邮件以获取进一步的说明。"
       },
-      "account-details": {
+      "account": {
         "heading": "账户详情",
         "subheading": "查看并管理您的账户信息。"
       },
@@ -497,6 +518,10 @@
     "toChangePasswordSendOTP": "Чтобы изменить ваш пароль, одноразовый пароль (OTP) будет отправлен на ваш электронный адрес для подтверждения.",
     "currentEmail": "Текущий адрес электронной почты",
     "authenticating": "Аутентификация...",
+    "loadingUpdate": "обновление...",
+    "loadingLogin": "аутентификация...",
+    "loadingAuthenticate": "аутентификация...",
+    "loadingSignout": "выход...",
 
     "__components__": {
       "login": {
@@ -523,7 +548,7 @@
         "heading": "Пригласительное письмо",
         "subheading": "Вам пришло приглашение присоединиться. Пожалуйста, проверьте свою электронную почту для получения дальнейших инструкций."
       },
-      "account-details": {
+      "account": {
         "heading": "Детали Аккаунта",
         "subheading": "Просмотр и управление информацией вашего аккаунта."
       },

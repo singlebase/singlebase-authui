@@ -1,7 +1,7 @@
 {
   "name": "@singlebase/singlebase-authui",
-  "pkgName": "singlebase-js",
-  "version": "0.0.8",
+  "pkgName": "SinglebaseAuthUI",
+  "version": "0.1.0",
   "description": "Singlebase AuthUI",
   "homepage": "https://singlebase.cloud",
   "documentationURL": "https://docs.singlebasecloud.com/sdk/authui",
@@ -39,6 +39,7 @@
   },
   "devDependencies": {
     "@rollup/plugin-replace": "^6.0.1",
+    "@rollup/plugin-strip": "^3.0.4",
     "@tailwindcss/aspect-ratio": "^0.4.2",
     "@tailwindcss/forms": "^0.5.9",
     "@tailwindcss/typography": "^0.5.15",

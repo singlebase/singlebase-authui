@@ -26,36 +26,33 @@ onMounted(async () => {
               <VAvatar v-if="app?.$?.form?.photo_url" :src="app?.$?.form?.photo_url" class="h-24 w-24" aria-hidden="true" />
               <VUserIcon v-else class="h-32 w-32 v-text-secondary" aria-hidden="true" />            
             </div>
-            <div class="hidden mt-2">
-              <div class="text-sm v-text font-light">{{ app.$.form.email }}</div>
-            </div>
           </div>
         </div>
 
         <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
           <dt class="text-sm font-light v-text">{{ $t('email') }}</dt>
-          <dd class="mt-1 text-base v-text  sm:col-span-2 sm:mt-0">{{ app.$.form.email }}</dd>
+          <dd class="mt-1 font-light v-text sm:col-span-2 sm:mt-0">{{ app.$.form.email }}</dd>
         </div>
         <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
           <dt class="text-sm font-light v-text">{{ $t('displayName') }}</dt>
-          <dd class="mt-1 text-base v-text  sm:col-span-2 sm:mt-0">{{ app.$.form.display_name }}</dd>
+          <dd class="mt-1 font-light v-text sm:col-span-2 sm:mt-0">{{ app.$.form.display_name }}</dd>
         </div>
         <div v-if="$config.editFullName" class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
           <dt class="text-sm font-light v-text ">{{ $t('firstName') }}</dt>
-          <dd class="mt-1 text-base v-text  sm:col-span-2 sm:mt-0">{{ app.$.form.name }}</dd>
+          <dd class="mt-1 font-light v-text sm:col-span-2 sm:mt-0">{{ app.$.form.name }}</dd>
         </div>
         <div v-if="$config.editFullName" class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
           <dt class="text-sm font-light v-text ">{{ $t('lastName') }}</dt>
-          <dd class="mt-1 text-base v-text  sm:col-span-2 sm:mt-0">{{ app.$.form.surname }}</dd>
+          <dd class="mt-1 font-light v-text sm:col-span-2 sm:mt-0">{{ app.$.form.surname }}</dd>
         </div>
         <div v-if="$config.editPhoneNumber" class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
           <dt class="text-sm font-light v-text ">{{ $t('phoneNumber') }}</dt>
-          <dd class="mt-1 text-base v-text sm:col-span-2 sm:mt-0">{{ app.$.form.phone_number }}</dd>
+          <dd class="mt-1 font-light v-text sm:col-span-2 sm:mt-0">{{ app.$.form.phone_number }}</dd>
         </div>
       </dl>
     </div>
 
-    <div class="my-4 text-xs font-light leading-6 v-text opacity-50">id: {{ app.$.form._userkey }}</div>
+    <div class="my-4 text-xs font-light leading-6 v-text opacity-50">ID: {{ app.$.form._userkey }}</div>
 
     <div class="mt-10 grid grid-cols-1 gap-2 sm:grid-cols-2">
       <button class="v-btn-ghost !font-light w-full" @click="app?.setView('change-email')">{{ $t('changeEmail') }}</button>
