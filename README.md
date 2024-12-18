@@ -48,13 +48,13 @@ The library provides the following languages by default:
 ```
 const config = {
   styleRoundButton:bool 
-  showBackButton:bool
   showSignupButton:bool
   showForgotPassword:bool
   showSocialLogin:bool
   showPasswordHint:bool
-  signinRedirectUrl:str
-  signinCallback:Function
+  onAuthStateChange:Function
+  onUserUpdate:Function
+  onAuthError:Function
   lang:str
   locales:Object
   theme:str
@@ -66,11 +66,10 @@ const config = {
 Tag attributes to add in the html tag:
 
 ```
-- lang
-- theme
-- view
+- lang=en
+- theme=dark|light
+- view=login
 - style-round-button
-- show-back-button
 - show-signup-button
 - show-forgot-password-button
 - show-social-login
@@ -152,10 +151,10 @@ const singlebase = createClient({ api_key })
 // config 
 const authUIConfig = {
   lang: "en",
-  theme: "default",
+  theme: "dark",
 
   // callback function when login is successful
-  onSignIn: (user) => {
+  onAuthStateChange: (user) => {
     if (user && user?._key) {
       // your code here... 
       // load to state
