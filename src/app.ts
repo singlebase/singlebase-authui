@@ -15,6 +15,15 @@ import packageJson from '../package.json' assert { type: 'json' };
 const PKG_VERSION = packageJson.version;
 const PKG_NAME = packageJson.pkgName
 
+const AUTH_EVENTS = {
+  INITIALIZED: "INITIALIZED",
+  SESSION_CHANGED: "SESSION_CHANGED",
+  TOKEN_REFRESHED: "TOKEN_REFRESHED",
+  ACCOUNT_CREATED: "ACCOUNT_CREATED",
+  SIGNED_IN: "SIGNED_IN",
+  SIGNED_OUT: "SIGNED_OUT",
+  USER_UPDATED: "USER_UPDATED"
+}
 
 const ERRORS = {
   GENERIC: 'Unable to continue. Please try again later.',
@@ -124,8 +133,6 @@ function defaultConfigData() {
     onAuthStateChange: null,
     // @onAuthError:Function - fires when the authentication status changes: login, logout, token refresh
     onAuthError: null,
-    // @onUserUpdate:Function - Handles profile/account updates:
-    onUserUpdate: null,
     // @onUIViewChange:Function - a function that will be triggered when changing to a different UI Vuew
     onUIViewChange: null, 
 
@@ -155,11 +162,13 @@ const xdata: {
   authClient: Object|null,
   authUIConfig: Object|null,
   useFilestore: Object|null,
+  authStateSubscribers: Map<string, Function>, // Add this line
 } = {
-  otpNextAction: null,  // action can be a function or null
+  otpNextAction: null,
   authClient: null,
   authUIConfig: {},
-  useFilestore: null
+  useFilestore: null,
+  authStateSubscribers: new Map(), // Add this line
 };
 
 
@@ -205,7 +214,7 @@ const state = reactive({
 
 //-----------------------------------------------------------------------------
 
-function initialize() {
+async function initialize() {
   try {
     const _pkgNameVersion = `${PKG_NAME}@${PKG_VERSION}`
     console.log(_pkgNameVersion)
@@ -222,7 +231,10 @@ function initialize() {
         // only warn on misconfiguration
         if (!_config?.onAuthStateChange) {
           console.warn(misConfError)
-        } 
+        } else {
+          subscribeToAuthState(_config.onAuthStateChange)     
+        }
+        await onAuthStateChange(AUTH_EVENTS.INITIALIZED, null)
         init()
       } else {
         state.initialized = -1
@@ -264,7 +276,7 @@ async function init() {
             if (state?.postLoginView) {
               resetPostLoginView()
             }
-            await onAuthStateChange(userData)
+            await onAuthStateChange(AUTH_EVENTS.SESSION_CHANGED,userData)
           }
         }
       } else  {
@@ -291,7 +303,7 @@ async function init() {
               if (state?.postLoginView) {
                 resetPostLoginView()
               }
-              await onAuthStateChange(userData)
+              await onAuthStateChange(AUTH_EVENTS.SESSION_CHANGED, userData)
             }
           }
         } else {
@@ -415,24 +427,33 @@ function translate(path) {
 }
 
 
-function getLoadingMessage() {
-
-}
-
 //-----------------------------------------------------------------------------
 // ACTIONS 
 
-async function onAuthStateChange(userData:{}) {
-  if (state.config.onAuthStateChange) {
-    await state.config?.onAuthStateChange(userData)
-  } 
+/**
+ * Subscribe to auth state changes
+ * @param callback Function to be called on auth state changes
+ * @returns Function to unsubscribe
+ */
+function subscribeToAuthState(callback: Function) {
+  const id = crypto.randomUUID(); // Generate unique ID
+  xdata.authStateSubscribers.set(id, callback);
+  return () => {
+    xdata.authStateSubscribers.delete(id);
+  };
 }
 
-async function onUserUpdate(userData:{}) {
-  if (state.config.onUserUpdate) {
-    await state.config?.onUserUpdate(userData)
-  } 
+async function onAuthStateChange(event:string, data=null) {
+  // Notify all subscribers
+  for (const callback of xdata.authStateSubscribers.values()) {
+    try {
+      await callback({ event, data });
+    } catch (e) {
+      console.error('Error in auth state subscriber:', e);
+    }
+  }
 }
+
 
 /**
  * Return the auth client
@@ -462,7 +483,7 @@ async function otpCTA() {
 }
 
 async function loadAuthState() {
-  const userData = await getAuthClient()?.getUser()
+  const userData = await getUser()
   resetForm()
   if (userData) {
     for (const k of USER_DATA_FIELDS) {
@@ -480,7 +501,7 @@ async function loadAuthState() {
  */
 async function requireAuthState() {
   setLoading(true, LOADING.AUTHENTICATE)
-  if (!await getAuthClient()?.getUser()) {
+  if (!await getUser()) {
     setView(VIEWS.UNAUTHORIZED)
     setLoading(false)
     return false
@@ -498,24 +519,22 @@ async function isAuthenticated() {
   return getAuthClient()?.isAuthenticated()
 }
 
+async function getUser() {
+  return await getAuthClient()?.getUser()
+}
+
 async function signout() {
   try {
     if(await isAuthenticated()) {
       setLoading(true, LOADING.SIGNOUT)
       await getAuthClient()?.signOut()
-      await onAuthStateChange(null)
+      await onAuthStateChange(AUTH_EVENTS.SESSION_CHANGED, null)
+      await onAuthStateChange(AUTH_EVENTS.SIGNED_OUT, null)
     }
   } catch (e) { } finally {
     setLoading(false)
   }
   setView(VIEWS.LOGIN)
-}
-
-async function continueWithLogin() {
-  const userData = await getAuthClient().getUser()
-  if (userData) {
-    await onAuthStateChange(userData)
-  }
 }
 
 
@@ -564,12 +583,14 @@ async function submitSigninWithPassword() {
     const res = await getAuthClient().signInWithPassword(data)
     resetPassword()
     if (res.ok) {
-      const user = await getAuthClient().getUser()
+      const user = await getUser()
       setView(state?.postLoginView || VIEWS.LOGIN_SUCCESS)
       if (state?.postLoginView) {
         resetPostLoginView()
       }
-      await onAuthStateChange(user)
+      await onAuthStateChange(AUTH_EVENTS.SESSION_CHANGED, user)
+      await onAuthStateChange(AUTH_EVENTS.SIGNED_IN, user)
+      
       return true
     } else {
       const _e = res?.error?.description
@@ -647,6 +668,19 @@ async function submitSignupWithPassword() {
     }
     const res = await getAuthClient().signUpWithPassword(creds)
     if (res.ok) {
+      /**
+       * A signup will never tell if a signup is fully successful
+       * It always return _key
+       * After signup, it requires a login to ensure the account is valid
+       */
+      const user = {
+        _key: res?.data?._key,
+        email: state.form.email,
+        display_name: state.form.display_name,
+        name: state.form.display_name,
+        surname: state.form.surname || state.form.display_name,
+      }
+      await onAuthStateChange(AUTH_EVENTS.ACCOUNT_CREATED, user)
       return true;
     } else {
       resetPassword()
@@ -709,8 +743,8 @@ async function submitResetPassword() {
       // return to login 
       resetPassword()
       setView(VIEWS.LOGIN)
-      const user = await getAuthClient().getUser()
-      await onUserUpdate(user)
+      const user = await getUser()
+      await onAuthStateChange(AUTH_EVENTS.USER_UPDATED, user)
       return true 
     } else {
       setErrorMessage(ERRORS.GENERIC)
@@ -805,9 +839,9 @@ async function updateProfile() {
 
     const res = await getAuthClient().updateProfile(data)
     if (res.ok) {
-      const user = await getAuthClient().getUser()
+      const user = await getUser()
       setView(VIEWS.ACCOUNT)
-      await onUserUpdate(user)
+      await onAuthStateChange(AUTH_EVENTS.USER_UPDATED, user)
       return true;
     } else {
       const _e = res?.error?.description
@@ -871,9 +905,9 @@ async function submitChangeEmail() {
     const res = await getAuthClient().updateAccount(data)
     resetPassword()
     if (res.ok) {
-      const user = await getAuthClient().getUser()
+      const user = await getUser()
       setView(VIEWS.ACCOUNT)
-      await onUserUpdate(user)
+      await onAuthStateChange(AUTH_EVENTS.USER_UPDATED, user)
       return true
     } else {
       const _e = res?.error?.description
@@ -937,9 +971,9 @@ async function submitChangePassword() {
     const res = await getAuthClient().updateAccount(data)
     resetPassword()
     if (res.ok) {
-      const user = await getAuthClient().getUser()
+      const user = await getUser()
       setView(VIEWS.ACCOUNT)
-      await onUserUpdate(user)
+      await onAuthStateChange(AUTH_EVENTS.USER_UPDATED, user)
       return true
     } else {
       const _e = res?.error?.description
@@ -958,6 +992,17 @@ async function submitChangePassword() {
   }
 }
 
+async function refreshAuthSession() {
+  try {
+    await getAuthClient().refreshSession()
+    const user = await getUser()
+    await onAuthStateChange(AUTH_EVENTS.SESSION_CHANGED, user)
+    return user
+  } catch (e) {
+    return null
+  }
+}
+
 // === UPLOAD PHOTO
 async function uploadProfilePhoto(file) {
   setErrorMessage(null)
@@ -973,9 +1018,10 @@ async function uploadProfilePhoto(file) {
     const res = await filestore.upload(file, opts)
     if (res.ok) {
       state.form.photo_url = res?.data?.url
-      await getAuthClient().refreshSession()
-      const user = await getAuthClient().getUser()
-      await onUserUpdate(user)
+      const user = await refreshAuthSession()
+      if (user) {
+        await onAuthStateChange(AUTH_EVENTS.USER_UPDATED, user)
+      }
     }
   } catch (e) {
     console.error(e)
@@ -996,6 +1042,7 @@ export default {
   updateConfig,
   translate,
   setPostLoginView,
+  subscribeToAuthState,
 
   //
   VIEWS,
@@ -1007,10 +1054,11 @@ export default {
   // Actions
   initialize,
   isAuthenticated,
+  getUser,
+  refreshAuthSession,
   requireAuthState,
   otpCTA,
   signout,
-  continueWithLogin,
   signinWithPassword,
   signupWithPassword,
   updateProfile,

@@ -38,22 +38,22 @@ The library provides the following languages by default:
 
 `<singlebase-authui>`
 
-```
+```html
 <singlebase-authui></singlebase-authui>
 ```
 
 
 ### Config
 
-```
+``` js 
 const config = {
   styleRoundButton:bool 
   showSignupButton:bool
   showForgotPassword:bool
   showSocialLogin:bool
   showPasswordHint:bool
+  hideLoginSuccessView:bool
   onAuthStateChange:Function
-  onUserUpdate:Function
   onAuthError:Function
   lang:str
   locales:Object
@@ -65,7 +65,8 @@ const config = {
 
 Tag attributes to add in the html tag:
 
-```
+``` 
+
 - lang=en
 - theme=dark|light
 - view=login
@@ -73,6 +74,45 @@ Tag attributes to add in the html tag:
 - show-signup-button
 - show-forgot-password-button
 - show-social-login
+- hide-login-success-view
+```
+
+### Element method 
+
+```
+- async getUser()
+- async isAuthenticated()
+- async signout()
+- async refreshAuthSession()
+- showView(view:string)
+- showUI(show:bool)
+- on(eventName:String, callback:Function)
+
+```
+
+### Auth Events
+
+```
+- INITIALIZED
+- SESSION_CHANGED
+- SIGNED_IN
+- SIGNED_OUT
+- USER_UPDATED
+```
+
+### Views:
+
+View to programmatically use
+
+```
+- login
+- signup
+- lost-password
+- account
+- edit-account
+- change-email
+- change-password
+- change-profile-photo
 ```
 
 
@@ -84,7 +124,7 @@ The AuthUI allows to inject a Header and a Footer
 
 #### - header
 
-```
+```html
   <singlebase-authui>
     <div slot="header">Acme Login</div>
   </singlebase-authui>
@@ -92,7 +132,7 @@ The AuthUI allows to inject a Header and a Footer
 
 #### - footer
 
-```
+```html
   <singlebase-authui>
     <div slot="footer">Terms of Service - Privacy Policy</div>
   </singlebase-authui>
@@ -110,7 +150,8 @@ To use the **Singlebase-AuthUI**, import `singlebase-js` and initialize the Auth
 
 **NPM/Yarn Install / JS Module Install**
 
-```
+```js 
+
 # npm
 npm install @singlebase/singlebase-js 
 
@@ -134,7 +175,7 @@ import createClient from '@singlebase/singlebase-js'
 
 or JS Module
 
-````
+````js
 <script type="module">
   import createClient  from 'https://cdn.jsdelivr.net/npm/@singlebase/singlebase-js/+esm'
 </script>
@@ -142,11 +183,10 @@ or JS Module
 
 ### 3. Initialize AuthUI
 
-```
+```js 
+
 const api_key = "your-api-key"
 const singlebase = createClient({ api_key })
-
-
 
 // config 
 const authUIConfig = {
@@ -154,11 +194,55 @@ const authUIConfig = {
   theme: "dark",
 
   // callback function when login is successful
-  onAuthStateChange: (user) => {
-    if (user && user?._key) {
-      // your code here... 
-      // load to state
-    }
+  onAuthStateChange: ({event, data}) => {
+    switch(event) {
+
+      //-- on initialization or when session is updated
+      case "SESSION_CHANGED": 
+        const user = data
+        if (user && user?._key) {
+          // your code here... 
+          // update state ...
+        }
+        break 
+
+      //-- when a new account is created
+      case "ACCOUNT_CREATED": 
+        const user = data
+        if (user && user?._key) {
+          // your code here... 
+          // update state ...
+        }
+        break
+
+      //-- when a user signs in
+      case "SIGNED_IN": 
+        const user = data
+        if (user && user?._key) {
+          // your code here... 
+          // update state ...
+        }
+        break 
+
+      //-- when a user signs out
+      case "SIGNED_OUT":  
+        // you code here...
+        // clear state
+        // data is null
+        break 
+
+      //-- when a user account is updated
+      case "USER_UPDATED": 
+        const user = data
+        if (user && user?._key) {
+          // your code here... 
+          // update state ...
+        }
+        break
+      
+      default:
+        break
+    }       
   }
 }
 
@@ -174,7 +258,7 @@ singlebase.initAuthUI(authUIConfig, loadAuthUILib)
 
 Inside of HTML, load the javascript 
 
-```
+```html
 <html>
 
 <body>
@@ -189,7 +273,7 @@ Inside of HTML, load the javascript
 
 or alternatively you can load the AuthUI lib manually, and add the `<singlebase-authui>`
 
-```
+```html
 <!-- import the AuthUI library manually, type must be 'module' -->
 
 <script type="module" src="https://cdn.jsdelivr.net/npm/@singlebase/singlebase-authui@latest/dist/index.js">

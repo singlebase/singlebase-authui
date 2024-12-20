@@ -21,10 +21,34 @@
       showSocialLogin: false,
       showPasswordHint: true,
       hideLoginSuccessView: true,
-      onAuthStateChange:(user) => console.log('SIGNIN CALLBACK', user),
-      onUserUpdate:(user) => console.log("USER UPDATED", user),
+      onAuthStateChange:({event, data}) => {
+        console.log("AUTH STATE", event, data)
+        switch(event) {
+          case "SESSION": 
+            break 
+
+          case "ACCOUNT_CREATED":
+            break
+
+          case "SIGNED_IN":
+            break 
+
+          case "SIGNED_OUT":
+            break 
+
+          case "USER_UPDATED":
+            break
+          
+          default:
+            break
+        }
+      },
     })
-    
+    // const el = ""
+    // el.onAuthStateChange(({event, data}) => {
+
+    // })
+
   </script>
 
 
@@ -35,11 +59,28 @@
 
   <div class="p-4 mx-auto max-w-lg">
     
-    <singlebase-authui view="account"></singlebase-authui>
+    <singlebase-authui id="authui" view="account"></singlebase-authui>
 
   </div>
 
     <script type="module" src="/src/main.ts"></script>
+
+    <script>
+      setTimeout(() => {
+        const el = document.querySelector("#authui")
+        console.log("E", el)
+        el.on("SIGNED_IN", user => {
+          el.hideUI()
+          console.log("USER HAS SIGNED IN", user)
+        })
+
+        el.on("SIGNED_OUT", () => {
+          console.log("The user has signed out")
+        })
+      }, 300)
+
+    </script>
+
     <!-- <script type="module" src="./dist/singlebase-authui.js"></script> -->
 </body>
 

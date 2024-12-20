@@ -31,8 +31,10 @@
  *  - change-profile-photo
  * 
  */
+//-----------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 
-import { computed, onMounted } from 'vue';
+import { computed, ref, onMounted, defineExpose, onUnmounted } from 'vue';
 import app from './app';
 import { toBoolean } from './lib'
 
@@ -53,6 +55,7 @@ import ChangeProfilePhotoView from './views/change-profile-photo.vue';
 import ChangeEmailView from './views/change-email.vue';
 import ChangePasswordView from './views/change-password.vue';
 
+//-----------------------------------------------------------------------------
 
 //=== set up props
 // note: props with camelCase must be set as dash in the element
@@ -76,6 +79,7 @@ const UNAUTH_ENTRYPOINTS = [
   "signup", 
   "lost-password"
 ]
+
 const AUTH_ENTRYPOINTS = [
   "account", 
   "edit-account", 
@@ -96,6 +100,7 @@ const CONFIG_BOOL_ATTRS = [
 const $view = computed(() => app.$.view)
 const $config = computed(() => app.$.config)
 const $t = app.translate // alias 
+const $hideUI = ref(null)
 
 /**
  * Translate the current view component under $Locales#__components__
@@ -109,11 +114,18 @@ function $t_viewComponent(word, view=null) {
   return $t(`__components__.${view}.${word}`)
 }
 
-
+/**
+ * Hide login success view 
+ */
+ const $hideLoginSuccessView = computed(() => {
+  if (typeof $hideUI.value === 'boolean') {
+    return $hideUI.value
+  }
+  return $view.value === 'login-success' && $config.value.hideLoginSuccessView === true
+})
 
 /**
  * Setup
- * 
  */
 async function setup() {
 
@@ -159,23 +171,108 @@ async function setup() {
   }
 }
 
-// --- MOUNT
-onMounted(async () => {
+/** Subscription at the element level */
 
-  // setup 
+const eventSubscribers = new Map();
+let authStateUnsubscribe = null;
+
+// Add this function to handle the individual event subscriptions
+function handleAuthStateEvent({ event, data }) {
+  const callbacks = eventSubscribers.get(event);
+  if (callbacks) {
+    callbacks.forEach(callback => {
+      try {
+        callback(data);
+      } catch (e) {
+        console.error('Error in event subscriber:', e);
+      }
+    });
+  }
+}
+
+
+/**
+ * onMounted
+ */
+onMounted(async () => {
+  //== setup 
   await setup() 
   
   //== initialize
   await app.initialize()
 
+  //== Set up the auth state subscription
+  authStateUnsubscribe = app.subscribeToAuthState(handleAuthStateEvent);
 })
 
+// Keep the cleanup on unmount
+onUnmounted(() => {
+  if (authStateUnsubscribe) {
+    authStateUnsubscribe();
+    authStateUnsubscribe = null;
+  }
+  eventSubscribers?.clear();
+});
+
+//-----------------------------------------------------------------------------
+/**
+ * Exposing methods to be used in JS
+ */
+
+
+function exposeShowView(view) {
+  const entrypoints = UNAUTH_ENTRYPOINTS.concat(AUTH_ENTRYPOINTS)
+  if (entrypoints.includes(view)) {
+    app.setView(view)
+  } else {
+    console.error("Unauthorized or invalid view")
+  }
+}
 
 /**
- * Hide login success view 
+ * Subscribe an event
+ * @param eventName 
+ * @param callback 
+ * 
+ * el.on("SESSION_CHANGED", data=> {...})
  */
-const $hideLoginSuccessView = computed(() => {
-  return $view.value === 'login-success' && $config.value.hideLoginSuccessView === true
+function exposeOn(eventName, callback) {
+  // ensure it's uppercase
+  eventName = eventName.toUpperCase()
+
+  if (!eventSubscribers.has(eventName)) {
+    eventSubscribers.set(eventName, new Set());
+  }
+  eventSubscribers.get(eventName).add(callback);
+
+  // Return unsubscribe function
+  return () => {
+    const callbacks = eventSubscribers.get(eventName);
+    if (callbacks) {
+      callbacks.delete(callback);
+      if (callbacks.size === 0) {
+        eventSubscribers.delete(eventName);
+      }
+    }
+  };
+}
+
+/**
+ * To hide/show UI
+ * @param show boolean
+ */
+function exposeShowUI(show=true) {
+  $hideUI.value = !show
+}
+
+defineExpose({
+  showView: exposeShowView,
+  showUI: exposeShowUI,
+  on: exposeOn,
+  signout: app?.signout,
+  isAuthenticated: app?.isAuthenticated,
+  getUser: app?.getUser,
+  refreshAuthSession: app?.refreshAuthSession
 })
 
 </script>
